@@ -1,0 +1,68 @@
+
+Discarded input sections
+
+ .bss           0x00000000        0x0 build/gpio.o
+ .ARM.attributes
+                0x00000000        0x0 build/gpio.o
+ .glue_7        0x00000000        0x0 build/gpio.o
+ .glue_7t       0x00000000        0x0 build/gpio.o
+ .vfp11_veneer  0x00000000        0x0 build/gpio.o
+ .janus_2cc_veneer
+                0x00000000        0x0 build/gpio.o
+ .v4_bx         0x00000000        0x0 build/gpio.o
+ .bss           0x00000000        0x0 build/main.o
+ .ARM.attributes
+                0x00000000        0x0 build/main.o
+ .glue_7        0x00000000        0x0 build/main.o
+ .glue_7t       0x00000000        0x0 build/main.o
+ .vfp11_veneer  0x00000000        0x0 build/main.o
+ .janus_2cc_veneer
+                0x00000000        0x0 build/main.o
+ .v4_bx         0x00000000        0x0 build/main.o
+ .bss           0x00000000        0x0 build/systemTimer.o
+ .ARM.attributes
+                0x00000000        0x0 build/systemTimer.o
+ .glue_7        0x00000000        0x0 build/systemTimer.o
+ .glue_7t       0x00000000        0x0 build/systemTimer.o
+ .vfp11_veneer  0x00000000        0x0 build/systemTimer.o
+ .janus_2cc_veneer
+                0x00000000        0x0 build/systemTimer.o
+ .v4_bx         0x00000000        0x0 build/systemTimer.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD build/gpio.o
+LOAD build/main.o
+LOAD build/systemTimer.o
+
+.init           0x00008000        0x4
+ *(.init)
+ .init          0x00008000        0x4 build/main.o
+                0x00008000                _start
+
+.text           0x00008004      0x124
+ *(.text)
+ .text          0x00008004       0x98 build/gpio.o
+                0x0000800c                SetGpioFunction
+                0x00008004                GetGpioAddress
+                0x0000805c                SetGpio
+ .text          0x0000809c       0x4c build/main.o
+ .text          0x000080e8       0x40 build/systemTimer.o
+                0x000080e8                GetSystemTimerBase
+                0x00008100                Wait
+                0x000080f0                GetTimeStamp
+
+.data           0x00008128        0x4
+ *(.data)
+ .data          0x00008128        0x0 build/gpio.o
+ .data          0x00008128        0x4 build/main.o
+ .data          0x0000812c        0x0 build/systemTimer.o
+
+/DISCARD/
+ *(*)
+OUTPUT(build/output.elf elf32-littlearm)
