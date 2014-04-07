@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *  FileName: main.s
 *  Authors: Stephen Chavez & Joshua Michael Waggoner
@@ -6,12 +5,8 @@
 *  Date: Mar 26, 2014
 *  Target: ARMv6 - Application Binary Interface (ABI) Compliant
 *
-*  Description: A sample assembly code implementation of the ok03 operating  
-*  system, that simply turns the OK LED on and off repeatedly, but now using 
-*  the EABI standard, and procedure calls. 
+*  Description: An implimentation of the screen for project
 *
-*  main.s is likely to change more than anything...
-*  
 ******************************************************************************/
 
 /*
@@ -44,84 +39,73 @@ b main
 
 main:
 
-/* Set the stack point to 0x8000.*/
+   mov sp,#0x8000		/*Set the stack point to 0x8000.*/
 
-mov sp,#0x8000
+   mov r0,#1024 		/*Set width, both virtual and physical*/
+   mov r1,#768			/*Set width, both virtual and physical*/
+   mov r2,#16			/*Set bitDepth*/
+      bl InitialiseFrameBuffer	/*Call InitializeFrameBuffer with 
+				  these arguments*/
 
- /* 
- * Use our new SetGpioFunction function to set the function of GPIO 
- * port 16 (OK LED) to 001 (binary)
- */
+   teq r0,#0			/*Test to see if we have no error*/
+      bne noError$		/*If so, branch to no error*/
 
-mov r0,#16
-mov r1,#1
+   mov r0,#16			/*If not, move 16 into r0*/
+   mov r1,#1			/*Move 1 into r1*/
+      bl SetGpioFunction	/*set the GPIO function to turn on the OK LED*/
+   mov r0,#16			
+   mov r1,#0
+      bl SetGpio
 
-   bl SetGpioFunction
+   error$:				/*Error loop*/
+      b error$
 
-/*New-For S.O.S. Pattern*/
+   noError$:				/*Start here for no error*/
+      fbInfoAddr .req r4		/*Alias r4 as fbInfoAddr*/
+      mov fbInfoAddr,r0			/*move r0 into fbInfoAddr*/
 
- /*
- *This code loads the pattern into r4, and loads 0 into r5. r5 will be our 
- *sequence position, so we can keep track of how much of the pattern we have 
- *displayed.
- */
+/*
+  This is quite a large chunk of code, and has a loop within a loop within a 
+  loop. To help get your head around the looping, I've indented the code which 
+  is looped, depending on which loop it is in. This is quite common in most 
+  high level programming languages, and the assembler simply ignores the tabs. 
+  We see here that I load in the frame buffer address from the frame buffer 
+  information structure, and then loop over every row, then every pixel on the 
+  row. At each pixel, I use an strh (store half word) command to store the 
+  current colour, then increment the address we're writing to. After drawing 
+  each row, we increment the colour that we are drawing. After drawing the 
+  full screen, we branch back to the beginning.
+*/
+   render$:				/*Render subroutine*/
+      fbAddr .req r3			/*Alias r3 as fbAddr*/
+      ldr fbAddr,[fbInfoAddr,#32]	/*load what's in fbInfoAddr plus 32
+					  into fbAddr*/
 
-ptrn .req r4
-ldr ptrn,=pattern
-ldr ptrn,[ptrn]
-seq .req r5
-mov seq,#0
+      color .req r0			/*Alias r0 as color*/
+      y .req r1				/*Alias r1 as y*/
+      mov y,#768			/*Move 68 into y*/
 
-/*Beginning of loop*/
-loop$:
- 
- /* 
- * Use our new SetGpio makefunction to set GPIO 16 base on the current bit
- * in the pattern causing the LED to turn on if the pattern contains 0, 
- * and off if it contains 1.
- */
+      drawRow$:				/*Draw row subroutine*/
+         x .req r2			/*Alias r2 as x*/
+         mov x,#1024			/*Move 1024 into x*/
 
-mov r0,#16
-mov r1,#1
-lsl r1,seq
-and r1,ptrn
+            drawPixel$:			/*drawPixel subroutine*/
+               strh color,[fbAddr]	/*store what's in fbAddr's address in
+				  	  color as unsigned Halfword 
+					  (Zero extend to 32 bits on loads.)*/
+               add fbAddr,#2		/*Add 2 to fbAddr*/
+               sub x,#1			/*Subtract 1 from x*/
+               teq x,#0			/*If x is not at 0, repeat*/
+               bne drawPixel$		/*If != branch back to drawPixel*/
 
-   bl SetGpio
+            sub y,#1			/*Subtract 1 from y*/
+            add color,#1		/*Add 1 to color*/
+            teq y,#0			/*If x is not at 0, repeat*/
+            bne drawRow$		/*If != branch back to drawRow*/
 
- /* 
- * We wait for 0.25s using our wait method.
- */
+         b render$			/*Branch back to render*/
 
-ldr r0,=250000
-
-   bl Wait
-
- /*
- * Loop over this process forevermore, incrementing the sequence counter.
- * When it reaches 32, its bit pattern becomes 100000, and so anding it with 
- * 11111 causes it to return to 0, but has no effect on all patterns less than
- * 32.
- */
-
-add seq,#1
-and seq,#0b11111
-
-   b loop$
-
-/*****************************************************************************/
-/**********************************Data Section*******************************/
-/*****************************************************************************/
-
-.section .data  /*Data section*/
-
-.align 2 	/*.align 2 which means that this data will definitely be 
-                   placed at an address which is a multiple of 2*/
-
-		/*It is really important to do this, because the ldr 
-		  instruction we used to read memory only works at 
-		  addresses that are multiples of 4.*/	
-
-pattern:
-.int 0b11111111101010100010001000101010 /*will be placed into the output*/
+   .unreq fbAddr			/*Unalias fbAddr*/
+   .unreq fbInfoAddr			/*Unalias fbInfoAddr*/
 
 /*****************************************************************************/
