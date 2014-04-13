@@ -22,8 +22,8 @@
 */
  .globl GetGpioAddress        /*Tells assembler to make function global*/
 GetGpioAddress:               /*Label*/
-	ldr r0, =0x20200000       /*Load GPIO controller access address in r0*/ 
-	mov pc,lr                 /*Move contents of link register into pc*/
+    ldr r0, =0x20200000       /*Load GPIO controller access address in r0*/ 
+    mov pc,lr                 /*Move contents of link register into pc*/
 
 /****************************************************************************/
 
@@ -48,12 +48,12 @@ setGpioFunction:              /*Label*/
 * The next three statements just makes pinNum an alias for r2 instead of r0,
 * and brings it's value with it. 
 */
-      mov r2,pinNum          /*Move pinNum into R2*/
-      .unreq pinNum          /*Unalias r2*/
-      pinNum .req r2         /*Alias pinNum to r2*/
+      mov r2,pinNum           /*Move pinNum into R2*/
+      .unreq pinNum           /*Unalias r2*/
+      pinNum .req r2          /*Alias pinNum to r2*/
 
-      bl GetGpioAddress      /*Loads GPIO address into r0*/
-      gpioAddr .req r0       /*Alias ro as gpioAddr*/
+      bl GetGpioAddress       /*Loads GPIO address into r0*/
+      gpioAddr .req r0        /*Alias ro as gpioAddr*/
 
 /*
 * This simple loop code compares the pin number to 9. If it is higher 
@@ -62,12 +62,12 @@ setGpioFunction:              /*Label*/
 * GPIO controller address we are looking for.
 */
    functionLoop$:
-      cmp pinNum,#9          /*Compare pin number to 9*/
-      subhi pinNum,#10       /*Sub 10 from pin number*/
-      addhi gpioAddr,#4      /*Adds 4 to the GPIO Controller address*/
+      cmp pinNum,#9           /*Compare pin number to 9*/
+      subhi pinNum,#10        /*Sub 10 from pin number*/
+      addhi gpioAddr,#4       /*Adds 4 to the GPIO Controller address*/
       bhi functionLoop$
 
-   add pinNum, pinNum,lsl #1   /*Multiplication by 3 in disguise*/
+   add pinNum, pinNum,lsl #1  /*Multiplication by 3 in disguise*/
    lsl pinFunc,pinNum         /*Shift pinFunc by value in pinNum*/
    mask .req r3               /*Alias r3 as mask*/
    mov mask, #7               /*r3 = 111 in binary*/
@@ -80,7 +80,7 @@ setGpioFunction:              /*Label*/
      
    .unreq pinNum              /*Unalias pinNum*/
 
-   mvn mask, mask  	         /*
+   mvn mask, mask             /*
                               * 3 = 11..1100011..11 where the 000 is in 
                               * the same poisiont as the function in r1 
 				              */
@@ -112,7 +112,7 @@ SetGpio:
    pinVal .req r1             /*Alias piVal  for r1 */
 
       cmp pinNum,#53          /*See if we have a valid pinNum*/
-      movhi pc,lr	          /*Move link register into program counter*/
+      movhi pc,lr             /*Move link register into program counter*/
       push {lr}	              /*Push link register on stack*/
       mov r2,pinNum           /*Move pinNumber to r2*/
 
@@ -138,30 +138,31 @@ SetGpio:
       * This means if we add 28 we get the address for turning the pin on,
       * and if we add 40 we get the address for turning the pin off.
       */
-      add gpioAddr,pinBank          /*Add pin bank value to gpio addr*/
+      add gpioAddr,pinBank           /*Add pin bank value to gpio addr*/
 
-      .unreq pinBank                /*Unalias pinbank*/
+      .unreq pinBank                 /*Unalias pinbank*/
 
-      and pinNum,#31                /*and pinNum with 11111(base2)*/
-      setBit .req r3                /*Alias r3 as setBit*/
-      mov setBit,#1                 /*Move 1 into setBit*/
-      lsl setBit,pinNum             /*lsl setBit by pinNum*/
+      and pinNum,#31                 /*and pinNum with 11111(base2)*/
+      setBit .req r3                 /*Alias r3 as setBit*/
+      mov setBit,#1                  /*Move 1 into setBit*/
+      lsl setBit,pinNum              /*lsl setBit by pinNum*/
 
-      .unreq pinNum	                /*Unalias pinNum*/
+      .unreq pinNum	                 /*Unalias pinNum*/
 
-      teq pinVal,#0	                /*Test if pinVal is equal to 0*/
+      teq pinVal,#0	                 /*Test if pinVal is equal to 0*/
 
-      .unreq pinVal                 /*Unalias pinVal*/
+      .unreq pinVal                  /*Unalias pinVal*/
 
-      streq setBit,[gpioAddr,#40]   /*If teq = true  turn pin on*/
-      strne setBit,[gpioAddr,#28]   /*If teq = false turn pin off*/
+      streq setBit,[gpioAddr,#40]    /*If teq = true  turn pin on*/
+      strne setBit,[gpioAddr,#28]    /*If teq = false turn pin off*/
 
-      .unreq setBit                 /*Unalias setBit*/
-      .unreq gpioAddr               /*Unalias gpioAddr*/
+      .unreq setBit                  /*Unalias setBit*/
+      .unreq gpioAddr                /*Unalias gpioAddr*/
 
-      pop {pc}		  /*
-			          * Return by popping the pc, which sets it to the 
-		              * value that we stored when we pushed the link register.
-                      */			
+      pop {pc}                       /*
+                                     *Return by popping the pc, which sets 
+                                     *it to the value that we stored when 
+                                     *we pushed the link register.
+                                     */			
 
 /****************************************************************************/
