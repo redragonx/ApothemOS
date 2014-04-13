@@ -20,9 +20,7 @@
  */
 
 .section .init
-
 .globl _start
-
 _start:
 
 /* Branch to the actual main code.*/
@@ -68,8 +66,32 @@ main:
 /* 
 * Let our drawing method know where we are drawing to.
 */
-	bl SetGraphicsAddress
+      bl SetGraphicsAddress
 
+/* 
+* Find the cmdline tag.
+*/
+      mov r0,#9
+      bl FindTag
+
+/* 
+* Draw our command line.
+*/
+      ldr r1,[r0]
+      lsl r1,#2
+      sub r1,#8
+      add r0,#8
+
+      mov r2,#0
+      mov r3,#0
+      bl DrawString
+      loop$:
+         b loop$
+
+/*****************************************************************************/
+
+/*Old code*/
+/*
 	lastRandom .req r7
 	lastX .req r8
 	lastY .req r9
@@ -116,6 +138,6 @@ main:
 	   .unreq lastX
 	   .unreq lastY
 	   .unreq colour
-
+*/
 /*****************************************************************************/
 

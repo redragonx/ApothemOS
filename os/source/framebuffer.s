@@ -1,4 +1,4 @@
-/******************************************************************************
+/*****************************************************************************
 *  FileName:framebuffer.s
 *  Authors: Stephen Chavez & Joshua Michael Waggoner
 *  Source: Baking Pi OS Tutorial - by Alex Chadwick
@@ -8,7 +8,7 @@
 *  Description: framebuffer.s contains data about our frame 
 *               buffer implementation
 *  
-*******************************************************************************/
+*****************************************************************************/
 
 .section .data 	  /* Defines this as a data section*/
 
@@ -79,8 +79,8 @@ InitialiseFrameBuffer:
 	ldr fbInfoAddr,=FrameBufferInfo /*Load frame buffer info in r4*/
 	str width,[r4,#0]		/*Write width into r4's lowest 4 bits*/
 	str height,[r4,#4]		/*Write height into r4's second lowest 4 bits*/
-	str width,[r4,#8]		/*Write virtual width into r4's third lowest 4 bits*/
-	str height,[r4,#12]		/*Write virtual width into r4's fourth lowest 4 bits*/
+	str width,[r4,#8]		/*Write virtual width into r4's 3rd lowest 4 bits*/
+	str height,[r4,#12]		/*Write virtual width into r4's 4th lowest 4 bits*/
 	str bitDepth,[r4,#20]   /*Write bitDepth into r4's fifth owest 4 bits*/
 
 	.unreq width			/*Unalias width*/
@@ -131,4 +131,4 @@ InitialiseFrameBuffer:
 	.unreq result            /*Unalias result*/
 	.unreq fbInfoAddr        /*Unalias fbInfoAddr*/
 
-/*****************************************************************************/
+/****************************************************************************/

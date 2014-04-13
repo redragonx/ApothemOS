@@ -10,27 +10,36 @@
 *  
 ******************************************************************************/
 	
-
 /* 
 * The foreColour is the colour which all our methods will draw shapes in.
 * C++ Signature: short foreColour;
 */
 .section .data				
-.align 1				/*Align output? to 1 bit*/
+.align 1				        /*Align output? to 1 bit*/
 foreColour:				
-   .hword 0xFFFF			/*Insert the (16-bit) half-word 
-					  value of the expression into the 
-					  object file.*/
-
-
+   .hword 0xFFFF		        /*
+                                *Insert the (16-bit) half-word 
+					            *value of the expression into the 
+					            *object file.
+                                */
 
 /* 
 * graphicsAddress stores the address of the frame buffer info structure. 
 * C++ Signature: FrameBuferDescription* graphicsAddress;
 */
-.align 2				/*Align to 2 bytes*/
+.align 2                        /*Align to 2 bytes*/
 graphicsAddress:
-   .int 0				/**/
+   .int 0				        /*???*/
+
+/* 
+* Font stores the bitmap images for the first 128 characters.
+*/
+.align 4                       /*
+                               * Character starts on a multiple of 16 bytes, 
+                               * which can be used for a speed trick later
+                               */
+font:
+    .incbin "font.bin"         /*Includes the file font binary file*/
 
 /*****************************************************************************/
 
@@ -39,9 +48,9 @@ graphicsAddress:
 * C++ Signature: void SetForeColour(u16 colour);
 */
 .section .text				
-.globl SetForeColour			/*Make this a global function*/
+.globl SetForeColour            /*Make this a global function*/
 SetForeColour:		
-   cmp r0,#0x10000			/*Compare 0x10000 ro r0*/
+   cmp r0,#0x10000			    /*Compare 0x10000 ro r0*/
    movhi pc,lr
    moveq pc,lr				
 
@@ -163,19 +172,21 @@ DrawLine:
    mov y1,r3				/*Move r3 to y1 (r12)*/
 
    dx .req r4				/*r4 is aliased as dx*/
-   dyn .req r5 				/* Note that we only ever use -deltay, 
-					   so I store its negative for speed. 
-					   (hence dyn) */
+  
+   dyn .req r5 				/* 
+                            *  Note that we only ever use -deltay, 
+					        *  so I store its negative for speed. 
+					        *  (hence dyn) 
+                            */
+
    sx .req r6				/*Alias r6 as sx*/
    sy .req r7				/*Alias r7 as sy*/
    err .req r8				/*Alias r8 as err*/
 
    cmp x0,x1				/*Compare x0 to x1*/
-   subgt dx,x0,x1			/*If > subtract x1 from x0, 
-	  				  and store the answer in dx*/
+   subgt dx,x0,x1			/*If > subtract x1 from x0, store in dx*/
    movgt sx,#-1				/*If >, put #-1 in sx*/
-   suble dx,x1,x0			/*If <=, subtract x0 from x1.
-					  and store in dx*/
+   suble dx,x1,x0			/*If <=, subtract x0 from x1. Store in dx*/
    movle sx,#1				/*If <=, move #1 into sx*/
 
    cmp y0,y1				/*Same as above, but for y...*/
@@ -213,8 +224,174 @@ DrawLine:
    .unreq y1
    .unreq dx
    .unreq dyn
-   .unreq sx
+   .unreq sx 
    .unreq sy
    .unreq err
 
-/*****************************************************************************/
+/****************************************************************************/
+
+/*
+* DrawCharacter renders the image for a single character given in r0 to the
+* screen, with to left corner given by (r1,r2), and returns the width of the 
+* printed character in r0, and the height in r1.
+* C++ Signature: u32x2 DrawCharacter(char character, u32 x, u32 y);
+*/
+
+/* Note: r0 is character, r1 is x, r2 is y */
+
+.globl DrawCharacter
+DrawCharacter:
+   x .req r4                    /*Alias r4 as x*/
+   y .req r5                    /*Alias r5 as y*/
+   charAddr .req r6             /*Alias r6 as charAddr*/
+
+   cmp r0,#0x7F                  /*Check if character is valid member of set*/
+  
+   movhi pc,lr                  /*Return if not valid*/
+
+   mov x,r1                     /*Move the x avalue into x*/
+   mov y,r2                     /*Move the y value into y*/
+   push {r4,r5,r6,r7,r8,lr}     
+                                /*
+                                *  In accordance with EABI, push the current
+                                *  registers onto the stack for later use
+                                */
+
+
+   
+
+   ldr charAddr,=font           /*Load the font into charAddr???*/
+   add charAddr, r0,lsl #4      /*Add character * 16 and store in charAddr*/
+
+   lineLoop$:                   /*Beginning of loop*/
+      bits .req r7              /*Alias r7 as bits*/
+      bit .req r8               /*Alias r8 as bit*/
+      ldrb bits,[charAddr]      /*Load a byte of the charAddress*/
+      mov bit,#8                /*Set bit to 8*/
+
+      charPixelLoop$:           /*CharPixelLoop loop*/
+
+         subs bit,#1            /*Set bit to bit - 1.*/ 
+
+                                /*
+                                * Note: If S is specified, the condition code
+                                * flags are updated on the result of the 
+                                * operation.
+                                */
+
+         blt charPixelLoopEnd$  /*When bit is less than 1, branch*/
+         lsl bits,#1            /*Set bits to bits << 1*/
+         tst bits,#0x100        /**/
+         beq charPixelLoop$     /*Branch back if equal to charPixelLoop*/
+
+         add r0,x,bit           /*Add bit to x and store in r0*/
+         mov r1,y               /*Move y to r1*/
+         bl DrawPixel           /*Draw Pixel with ro, and r1 as x and y*/
+
+         teq bit,#0             /*Test if 0 = bit*/
+         bne charPixelLoop$     /*If not, bracnch back to charPixelLoop$*/
+
+      charPixelLoopEnd$:        /*charPixelLoopEnd$ loop label*/
+         .unreq bit             /*Unalias bit*/         
+         .unreq bits            /*Unalias bits*/
+         add y,#1               /*Add 1 to y*/
+         add charAddr,#1        /*Add 1 to character address*/
+         tst charAddr,#0b1111   /*Test charAddr against #0b1111*/
+         bne lineLoop$          /*If not equal, branch back to line loop*/
+
+         .unreq x               /*Unalias x*/
+         .unreq y               /*Unalias y*/
+         .unreq charAddr        /*Unalias charAddr*/
+
+         width .req r0          /*Alias r0 as width*/
+         height .req r1         /*Alias r1 as height*/
+         mov width,#8           /*Move 8 into width*/
+         mov height,#16         /*Move 16 into height*/
+
+         pop {r4,r5,r6,r7,r8,pc}     /*Pop the stack*/
+         .unreq width           /*Unalias width*/
+         .unreq height          /*Unalias height*/
+
+/****************************************************************************/
+
+/* 
+* DrawString renders the image for a string of characters given in r0 (length
+* in r1) to the screen, with to left corner given by (r2,r3). Obeys new line
+* and horizontal tab characters.
+* C++ Signature: u32x2 DrawString(char* string, u32 length, u32 x, u32 y);
+*/
+.globl DrawString
+DrawString:
+   x .req r4                    /*Alias r4 as x*/
+   y .req r5                    /*alias r5 as y*/
+   x0 .req r6                   /*Alias r6 as x0*/
+   string .req r7               /*Alias r7 as string*/
+   length .req r8               /*Alias r8 as length*/
+   char .req r9                 /*Alias r9 as char*/
+   push {r4,r5,r6,r7,r8,r9,lr}  /*Push registers onto stack*/
+
+   mov string,r0                /*Move input string into r0*/
+   mov x,r2                     /*Move x coord into x*/
+   mov x0,x                     /*Move x into x0*/
+   mov y,r3                     /*Move input y into y*/
+   mov length,r1                /*Move input length into r1*/
+
+   stringLoop$:                 /*stringLoop$ label*/
+      subs length,#1 
+                      /*
+                      * subs subtracts one number from another, 
+                      * stores the value and compares it to 0
+                      */
+
+         blt stringLoopEnd$     /*If length is zero, end by branching*/
+
+      ldrb char,[string]        /*
+                                * Load a byte of the what's in the adress
+                                * of string
+                                */
+
+      add string,#1             /*Add 1 to string*/
+
+      mov r0,char               /*Move char into r0*/
+      mov r1,x                  /*Move x into r1*/
+      mov r2,y                  /*Move y into r2*/
+         bl DrawCharacter       /*Draw the character*/
+      cwidth .req r0            /*Alias r0 as cwidth*/
+      cheight .req r1           /*Alias r1 as cheight*/
+
+      teq char,#'\n'            /*Test for null terminator*/
+      moveq x,x0                /*If equal, move x0 into x*/
+      addeq y,cheight           /*Add cheight to y to go to next line*/
+         beq stringLoop$        /*If equal, branch back to loop*/
+
+      teq char,#'\t'            /*Test for tab character*/
+      addne x,cwidth            /*Add cwidth to x if not tab*/
+      bne stringLoop$           /*If Not equal, lop back to tab*/
+
+      add cwidth, cwidth,lsl #2 /*cwidth * 5*/
+      x1 .req r1                /*Alias r1 as x1*/
+      mov x1,x0                 /*Move x0 into x1*/
+
+      stringLoopTab$:           /*Label for stringLoopTab*/
+         add x1,cwidth          /*Add cwidth to x1*/
+         cmp x,x1               /*Compare x1 to x*/
+         bge stringLoopTab$     /*While x is greater than x1, loop back*/
+
+      mov x,x1                  /*Move x1 into x*/
+      .unreq x1                 /*Unalias x1*/
+      b stringLoop$             /*Branch back to beginning*/
+
+   stringLoopEnd$:              /*Label for stringLoopEnd$ loop*/
+      .unreq cwidth             /*Unalias cwidth*/
+      .unreq cheight            /*Unalias cheight*/
+
+      pop {r4,r5,r6,r7,r8,r9,pc}     /*Pop registers to return*/
+      .unreq x                       /*Unalias everything else...*/
+      .unreq y
+      .unreq x0
+      .unreq string
+      .unreq length
+
+/****************************************************************************/
+
+
