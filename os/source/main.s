@@ -65,7 +65,7 @@ main:
       fbInfoAddr .req r4        /*Alias r4 as fbInfoAddr*/
       mov fbInfoAddr,r0	        /*move r0 into fbInfoAddr*/
 
-/* NEW
+/* 
 * Let our drawing method know where we are drawing to.
 */
 	bl SetGraphicsAddress
@@ -82,40 +82,40 @@ main:
 	mov r10,#0
 
    render$:
-	mov r0,lastRandom
-	bl Random
-	mov x,r0
-	bl Random
-	mov y,r0
-	mov lastRandom,r0
+	   mov r0,lastRandom
+	   bl Random
+	   mov x,r0
+	   bl Random
+	   mov y,r0
+	   mov lastRandom,r0
 
-	mov r0,colour
-	add colour,#1
-	lsl colour,#16
-	lsr colour,#16
-	bl SetForeColour
+	   mov r0,colour
+	   add colour,#1
+	   lsl colour,#16
+	   lsr colour,#16
+	   bl SetForeColour
 
-	mov r0,lastX
-	mov r1,lastY
-	lsr r2,x,#22
-	lsr r3,y,#22
+	   mov r0,lastX
+	   mov r1,lastY
+	   lsr r2,x,#22
+	   lsr r3,y,#22
 
-	cmp r3,#768
-	bhs render$
+	   cmp r3,#768
+	   bhs render$
 
-	mov lastX,r2
-	mov lastY,r3
+	   mov lastX,r2
+	   mov lastY,r3
 
-	bl DrawLine
+	   bl DrawLine
 
-	b render$
+	   b render$
 
-	.unreq x
-	.unreq y
-	.unreq lastRandom
-	.unreq lastX
-	.unreq lastY
-	.unreq colour
+	   .unreq x
+	   .unreq y
+	   .unreq lastRandom
+	   .unreq lastX
+	   .unreq lastY
+	   .unreq colour
 
 /*****************************************************************************/
 
