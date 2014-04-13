@@ -83,7 +83,7 @@ setGpioFunction:              /*Label*/
    mvn mask, mask             /*
                               * 3 = 11..1100011..11 where the 000 is in 
                               * the same poisiont as the function in r1 
-				              */
+                              */
         
    oldFunc .req r2            /*Alias oldFunc to r2. It's the old PinNum*/
    ldr oldFunc,[gpioAddr]     /*Load what's in gpioAddr into oldFunc*/
@@ -94,7 +94,7 @@ setGpioFunction:              /*Label*/
 	
 
    str pinFunc,[gpioAddr]     /*Store pinFunc in [gpioAddr] for return*/
-   .unreq pinFunc             /*Customary Unaliasing*/
+   .unreq pinFunc             /*Customary unaliasing*/
    .unreq gpioAddr            /*...*/
    pop {pc}                   /*Pop the stack to restore registers*/
 
@@ -139,26 +139,18 @@ SetGpio:
       * and if we add 40 we get the address for turning the pin off.
       */
       add gpioAddr,pinBank           /*Add pin bank value to gpio addr*/
-
       .unreq pinBank                 /*Unalias pinbank*/
-
       and pinNum,#31                 /*and pinNum with 11111(base2)*/
       setBit .req r3                 /*Alias r3 as setBit*/
       mov setBit,#1                  /*Move 1 into setBit*/
       lsl setBit,pinNum              /*lsl setBit by pinNum*/
-
-      .unreq pinNum	                 /*Unalias pinNum*/
-
-      teq pinVal,#0	                 /*Test if pinVal is equal to 0*/
-
+      .unreq pinNum                  /*Unalias pinNum*/
+      teq pinVal,#0                  /*Test if pinVal is equal to 0*/
       .unreq pinVal                  /*Unalias pinVal*/
-
       streq setBit,[gpioAddr,#40]    /*If teq = true  turn pin on*/
       strne setBit,[gpioAddr,#28]    /*If teq = false turn pin off*/
-
       .unreq setBit                  /*Unalias setBit*/
       .unreq gpioAddr                /*Unalias gpioAddr*/
-
       pop {pc}                       /*
                                      *Return by popping the pc, which sets 
                                      *it to the value that we stored when 
