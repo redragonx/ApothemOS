@@ -33,7 +33,7 @@ GetGpioAddress:               /*Label*/
 * C++ Signature: void SetGpioFunction(u32 gpioRegister, u32 function)
 */
 .globl SetGpioFunction        /*Tells assembler to make global*/
-setGpioFunction:              /*Label*/
+SetGpioFunction:              /*Label*/
 
    pinNum  .req r0
    pinFunc .req r1
@@ -91,7 +91,7 @@ setGpioFunction:              /*Label*/
 
    orr pinFunc, oldFunc       /*orr r1 and r2*/
    .unreq oldFunc             /*Unaliass oldFunc*/
-	
+
 
    str pinFunc,[gpioAddr]     /*Store pinFunc in [gpioAddr] for return*/
    .unreq pinFunc             /*Customary unaliasing*/

@@ -52,24 +52,24 @@ main:
 
    mov r0,#16			/*If not, move 16 into r0*/
    mov r1,#1			/*Move 1 into r1*/
-   bl SetGpioFunction	/*set the GPIO function to turn on the OK LED*/
+   bl SetGpioFunction	        /*set the GPIO function to turn on the OK LED*/
   
    mov r0,#16			
    mov r1,#0
    bl SetGpio
 
-   error$:				/*Error loop*/
+   error$:                      /*Error loop*/
       b error$
 
-   noError$:				/*Start here for no error*/
-      fbInfoAddr .req r4		/*Alias r4 as fbInfoAddr*/
-      mov fbInfoAddr,r0			/*move r0 into fbInfoAddr*/
+   noError$:                    /*Start here for no error*/
+      fbInfoAddr .req r4        /*Alias r4 as fbInfoAddr*/
+      mov fbInfoAddr,r0	        /*move r0 into fbInfoAddr*/
 
 /* NEW
 * Let our drawing method know where we are drawing to.
 */
 	bl SetGraphicsAddress
-	
+
 	lastRandom .req r7
 	lastX .req r8
 	lastY .req r9
@@ -94,7 +94,7 @@ main:
 	lsl colour,#16
 	lsr colour,#16
 	bl SetForeColour
-		
+
 	mov r0,lastX
 	mov r1,lastY
 	lsr r2,x,#22
@@ -102,10 +102,10 @@ main:
 
 	cmp r3,#768
 	bhs render$
-	
+
 	mov lastX,r2
 	mov lastY,r3
-	 
+
 	bl DrawLine
 
 	b render$
@@ -118,5 +118,4 @@ main:
 	.unreq colour
 
 /*****************************************************************************/
-
 
