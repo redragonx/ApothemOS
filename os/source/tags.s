@@ -1,12 +1,12 @@
 /*****************************************************************************
-*  FileName: gpio.s
+*  FileName: tags.s
 *  Authors: Stephen Chavez & Joshua Michael Waggoner
 *  Date: Mar 26, 2014
 *  Target: ARMv6 - Application Binary Interface (ABI) Compliant
 *
 *  Description: A file that holds information and routines
 *               pertaining to access and manipulation of
-*               tags for display.
+*               tags for the display.
 *  
 *****************************************************************************/
 

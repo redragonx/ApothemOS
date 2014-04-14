@@ -173,11 +173,8 @@ DrawLine:
 
    dx .req r4				/*r4 is aliased as dx*/
   
-   dyn .req r5 				/* 
-                            *  Note that we only ever use -deltay, 
-					        *  so I store its negative for speed. 
-					        *  (hence dyn) 
-                            */
+   dyn .req r5 				/*???*/
+                            
 
    sx .req r6				/*Alias r6 as sx*/
    sy .req r7				/*Alias r7 as sy*/
@@ -246,7 +243,8 @@ DrawCharacter:
    charAddr .req r6             /*Alias r6 as charAddr*/
 
    cmp r0,#0x7F                  /*Check if character is valid member of set*/
-  
+   movhi r0,#0
+   movhi r1,#0
    movhi pc,lr                  /*Return if not valid*/
 
    mov x,r1                     /*Move the x avalue into x*/
@@ -287,10 +285,12 @@ DrawCharacter:
          add r0,x,bit           /*Add bit to x and store in r0*/
          mov r1,y               /*Move y to r1*/
          bl DrawPixel           /*Draw Pixel with ro, and r1 as x and y*/
-
-         teq bit,#0             /*Test if 0 = bit*/
-         bne charPixelLoop$     /*If not, bracnch back to charPixelLoop$*/
-
+         
+         b charPixelLoop$
+         /*
+         teq bit,#0             
+         bne charPixelLoop$     
+         */
       charPixelLoopEnd$:        /*charPixelLoopEnd$ loop label*/
          .unreq bit             /*Unalias bit*/         
          .unreq bits            /*Unalias bits*/
