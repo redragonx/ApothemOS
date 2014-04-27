@@ -53,7 +53,7 @@ $(BUILD)output.elf : $(OBJECTS) $(LINKER)
 	$(ARMGNU)-ld --no-undefined $(OBJECTS) -L. $(patsubst %,-l %,$(LIBRARIES)) -Map $(MAP) -o $(BUILD)output.elf -T $(LINKER)
 
 # Rule to make the object files.
-$(BUILD)%.o: $(SOURCE)%.s
+$(BUILD)%.o: $(SOURCE)%.s $(BUILD)
 	$(ARMGNU)-as -I $(SOURCE) $< -o $@
 
 $(BUILD):

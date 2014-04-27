@@ -7,6 +7,9 @@
 *
 *  Description: framebuffer.s contains data about our frame 
 *               buffer implementation
+*
+*  Version:0.1-Verified same as tutorial code for debugging purposes.
+*              Erase this line when debuggin is completed :)
 *  
 *****************************************************************************/
 
@@ -20,6 +23,20 @@
                   *  values with the low 4 bits all 0.  
                   */
 
+/* 
+* When communicating with the graphics card about frame buffers, a message 
+* consists of a pointer to the structure below. The comments explain what each
+* member of the structure is.
+* The .align 12 is necessary to ensure correct communication with the GPU, 
+* which expects page alignment.
+* C++ Signature: 
+* struct FrameBuferDescription {
+*  u32 width; u32 height; u32 vWidth; u32 vHeight; u32 pitch; u32 bitDepth;
+*  u32 x; u32 y; void* pointer; u32 size;
+* };
+* FrameBuferDescription FrameBufferInfo =
+*		{ 1024, 768, 1024, 768, 0, 24, 0, 0, 0, 0 };
+*/
 .globl FrameBufferInfo 		/* Makes this a global function*/
 FrameBufferInfo:		/* Start of FrameBufferInfo*/
 

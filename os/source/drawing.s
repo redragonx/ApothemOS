@@ -77,7 +77,7 @@ SetGraphicsAddress:
 
 /*
 * DrawPixel draws a single pixel to the screen at the point in (r0,r1).
-* C++ Signature: void DrawPixel(u32x2 point);
+* C++ Signature: void DrawPixel(u32 x, u32 y);
 */
 .globl DrawPixel			/*Make this a global method*/
 DrawPixel:
