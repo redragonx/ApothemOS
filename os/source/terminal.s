@@ -80,20 +80,21 @@ terminalScreen:
 */
 TerminalColour:
 	teq r0,#6
-	ldreq r0,=0x02B5
-	beq SetForeColour
+ 
+   ldreq r0,=0x02B5
+      beq SetForeColour
 
-	tst r0,#0b1000
-	ldrne r1,=0x52AA
-	moveq r1,#0
-	tst r0,#0b0100
-	addne r1,#0x15
-	tst r0,#0b0010
-	addne r1,#0x540
-	tst r0,#0b0001
-	addne r1,#0xA800
-	mov r0,r1
-	b SetForeColour
+   tst r0,#0b1000
+   ldrne r1,=0x52AA
+   moveq r1,#0
+   tst r0,#0b0100
+   addne r1,#0x15
+   tst r0,#0b0010
+   addne r1,#0x540
+   tst r0,#0b0001
+   addne r1,#0xA800
+   mov r0,r1
+      b SetForeColour
 		
 /*
 * Copies the currently displayed part of TerminalBuffer to the screen.
