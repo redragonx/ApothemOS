@@ -193,11 +193,11 @@ batmansay:
    cmp r1, #10
    add r0, #10
    sub r1, #10
-   b Print
+   bl Print
 
    ldr r0,=batmansay
    ldr r1,=batmanStringLength
-   b Print
+   bl Print
 
 
 
