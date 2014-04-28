@@ -80,21 +80,20 @@ terminalScreen:
 */
 TerminalColour:
 	teq r0,#6
- 
-   ldreq r0,=0x02B5
-      beq SetForeColour
+	ldreq r0,=0x02B5
+	beq SetForeColour
 
-   tst r0,#0b1000
-   ldrne r1,=0x52AA
-   moveq r1,#0
-   tst r0,#0b0100
-   addne r1,#0x15
-   tst r0,#0b0010
-   addne r1,#0x540
-   tst r0,#0b0001
-   addne r1,#0xA800
-   mov r0,r1
-      b SetForeColour
+	tst r0,#0b1000
+	ldrne r1,=0x52AA
+	moveq r1,#0
+	tst r0,#0b0100
+	addne r1,#0x15
+	tst r0,#0b0010
+	addne r1,#0x540
+	tst r0,#0b0001
+	addne r1,#0xA800
+	mov r0,r1
+	b SetForeColour
 		
 /*
 * Copies the currently displayed part of TerminalBuffer to the screen.
@@ -307,6 +306,148 @@ Print:
 	.unreq char
 	.unreq bufferStop
 	.unreq view
+
+/*****************************************************************************/
+
+/*
+* Experimental - Added vers 0.4
+*/
+
+/*
+* Prints a string to the terminal and batman. r0 contains a 
+* pointer to the ASCII encoded string, and r1 contains its length. New lines,
+* and null terminators are obeyed. then it prints ascii art. lol. 
+* C++ Signature: void Print(char* string, u32 length);
+*/
+.globl PrintBatman
+PrintBatman:
+	teq r1,#0
+	moveq pc,lr
+
+	push {r4,r5,r6,r7,r8,r9,r10,r11,lr}
+	bufferStart .req r4
+	taddr .req r5
+	x .req r6
+	string .req r7
+	length .req r8
+	char .req r9
+	bufferStop .req r10
+	view .req r11
+
+	mov string,r0
+	mov length,r1
+
+	ldr taddr,=terminalStart
+	ldr bufferStop,[taddr,#terminalStop-terminalStart]
+	ldr view,[taddr,#terminalView-terminalStart]
+	ldr bufferStart,[taddr]
+	add taddr,#terminalBuffer-terminalStart
+	add taddr,#128*128*2
+	and x,bufferStop,#0xfe
+	lsr x,#1
+	
+	charLoopBatman$:
+		ldrb char,[string]
+		and char,#0x7f
+		teq char,#0x1b
+		beq charEscape$
+		teq char,#'\n'
+		bne charNormalBatman$
+
+		mov r0,#0x7f
+		clearLineBatman$:
+			strh r0,[bufferStop]
+			add bufferStop,#2
+			add x,#1
+			cmp x,#128
+			blt clearLineBatman$
+
+		b charLoopContinueBatman$
+
+	charEscapeBatman$:
+		cmp length,#2
+		blt charLoopContinueBatman$
+
+		sub length,#1
+		add string,#1
+		ldrb char,[string]
+		cmp char,#'9'
+		suble char,#'0'
+		subgt char,#'a'-10		
+		ldr r0,=terminalColour
+		strb char,[r0]
+		b charLoopContinueBatman$
+
+	charNormalBatman$:
+		teq char,#0
+		beq charLoopBreak$
+
+		strb char,[bufferStop]
+		ldr r0,=terminalColour
+		ldrb r0,[r0]
+		strb r0,[bufferStop,#1]
+		add bufferStop,#2
+		add x,#1
+		
+	charLoopContinueBatman$:
+		cmp x,#128
+		blt noScrollBatman$
+
+		mov x,#0
+		subs r0,bufferStop,view
+		addlt r0,#128*128*2
+		cmp r0,#128*(768/16)*2
+		addge view,#128*2
+		teq view,taddr
+		subeq view,taddr,#128*128*2
+
+	noScrollBatman$:
+		teq bufferStop,taddr
+		subeq bufferStop,taddr,#128*128*2
+
+		teq bufferStop,bufferStart
+		addeq bufferStart,#128*2
+		teq bufferStart,taddr
+		subeq bufferStart,taddr,#128*128*2
+
+		subs length,#1
+		add string,#1
+		bgt charLoopBatman$
+
+	charLoopBreakBatman$:
+	
+	sub taddr,#128*128*2
+	sub taddr,#terminalBuffer-terminalStart
+	str bufferStop,[taddr,#terminalStop-terminalStart]
+	str view,[taddr,#terminalView-terminalStart]
+	str bufferStart,[taddr]
+
+/*
+* Experimaental - Added vers 0.4
+*/
+
+
+        ldr r0,=batman
+        ldr r1,=batmanStringLength
+        /*bl should work, cause it should return to here right????*/
+        bl Print
+   
+
+	pop {r4,r5,r6,r7,r8,r9,r10,r11,pc}
+
+        
+
+
+	.unreq bufferStart                 /*Unalias everything else...*/
+	.unreq taddr 
+	.unreq x 
+	.unreq string
+	.unreq length
+	.unreq char
+	.unreq bufferStop
+	.unreq view
+
+/*************************End Print Batman stuff******************************/
 	
 /*
 * Reads the next string a user types in up to r1 bytes and stores it in r0. 
@@ -410,3 +551,67 @@ ReadLine:
 	.unreq taddr
 	.unreq length
 	.unreq view
+
+/*****************************************************************************/
+
+/*
+* Data Section
+*/
+
+.section .data
+
+/*
+* Experimental - batmansays
+*/
+/*****************************************************************************/
+
+.align 2
+batman:
+   
+.ascii"\n                     Tb.          Tb."                                
+.ascii"\n                     :$$b.        $$$b."                              
+.ascii"\n                     :$$$$b.      :$$$$b."                            
+.ascii"\n                     :$$$$$$b     :$$$$$$b"                           
+.ascii"\n                      $$$$$$$b     $$$$$$$b"                          
+.ascii"\n                      $$$$$$$$b    :$$$$$$$b"                         
+.ascii"\n                      :$$$$$$$$b---^$$$$$$$$b"                        
+.ascii"\n                      :$$$$$$$$$b        ''^Tb"                       
+.ascii"\n                       $$$$$$$$$$b    __...__`."                      
+.ascii"\n                       $$$$$$$$$$$b.g$$$$$$$$$pb"                     
+.ascii"\n                       $$$$$$$$$$$$$$$$$$$$$$$$$b"                    
+.ascii"\n                       $$$$$$$$$$$$$$$$$$$$$$$$$$b"                   
+.ascii"\n                       :$$$$$$$$$$$$$$$$$$$$$$$$$$;"                  
+.ascii"\n                       :$$$$$$$$$$$$$^T$$$$$$$$$$P;"                  
+.ascii"\n                       :$$$$$$$$$$$$$b  '^T$$$$P' :"                  
+.ascii"\n                       :$$$$$$$$$$$$$$b._.g$$$$$p.db"
+.ascii"\n                       :$$$$$$$$$$$$$$$$$$$$$$$$$$$$;"                
+.ascii"\n                       :$$$$$$$$'''''T$$$$$$$$$$$$P';"                
+.ascii"\n                       :$$$$$$$$       ''^^T$$$P^'  ;"                
+.ascii"\n                       :$$$$$$$$    .'       `'     ;"                
+.ascii"\n                       $$$$$$$$;   /                :"
+.ascii"\n                       $$$$$$$$;           .----,    :"
+.ascii"\n                       $$$$$$$$;         ,'          ;"
+.ascii"\n                       $$$$$$$$$p.                   |"
+.ascii"\n                      :$$$$$$$$$$$$p.                :"
+.ascii"\n                      :$$$$$$$$$$$$$$$p.            .'"
+.ascii"\n                      :$$$$$$$$$$$$$$$$$$p...___..--"
+.ascii"\n                      $$$$$$$$$$$$$$$$$$$$$$$$$;"
+.ascii"\n   .db.               $$$$$$$$$$$$$$$$$$$$$$$$$$"
+.ascii"\n  d$$$$bp.            $$$$$$$$$$$$$$$$$$$$$$$$$$;"
+.ascii"\n d$$$$$$$$$$pp..__..gg$$$$$$$$$$$$$$$$$$$$$$$$$$$"
+.ascii"\nd$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$p._            .gp."
+.ascii"\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$p._.ggp._.d$$$$b"
+.ascii"\n©2014 chris.com"
+
+
+batmanEnd:
+
+
+
+/*
+* Experimental - Version 0.4
+*/
+
+.align 2
+batmanStringLength:
+.int batmanEnd-batman
