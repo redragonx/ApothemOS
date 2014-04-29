@@ -15,13 +15,13 @@
 * C++ Signature: short foreColour;
 */
 .section .data				
-.align 1				        /*Align output? to 1 bit*/
+.align 1              /*Align output? to 1 bit*/
 foreColour:				
-   .hword 0xFFFF		        /*
-                                *Insert the (16-bit) half-word 
-					            *value of the expression into the 
-					            *object file.
-                                */
+   .hword 0xFFFF      /*
+                       *Insert the (16-bit) half-word 
+                       *value of the expression into the 
+                       *object file.
+                       */
 
 /* 
 * graphicsAddress stores the address of the frame buffer info structure. 
@@ -29,7 +29,7 @@ foreColour:
 */
 .align 2                        /*Align to 2 bytes*/
 graphicsAddress:
-   .int 0				        /*???*/
+   .int 0				        
 
 /* 
 * Font stores the bitmap images for the first 128 characters.
@@ -50,15 +50,15 @@ font:
 .section .text				
 .globl SetForeColour            /*Make this a global function*/
 SetForeColour:		
-   cmp r0,#0x10000			    /*Compare 0x10000 ro r0*/
+   cmp r0,#0x10000              /*Compare 0x10000 ro r0*/
    movhi pc,lr
    moveq pc,lr				
 
-   ldr r1,=foreColour			/*Load foreColour into r1*/
+   ldr r1,=foreColour           /*Load foreColour into r1*/
 
-   strh r0,[r1]				/*If #0x10000 > r0, store 0xFFFF
-					  into r0*/
-   mov pc,lr				/*Return*/
+   strh r0,[r1]                 /*If #0x10000 > r0, store 0xFFFF into r0*/
+					  
+   mov pc,lr                    /*Return*/
 
 /*****************************************************************************/
 
@@ -67,11 +67,11 @@ SetForeColour:
 * graphicsAddress;
 * C++ Signature: void SetGraphicsAddress(FrameBuferDescription* value);
 */
-.globl SetGraphicsAddress		/*Make this a global function*/
+.globl SetGraphicsAddress       /*Make this a global function*/
 SetGraphicsAddress:
-   ldr r1,=graphicsAddress		/*Load graphics address into r1*/
-   str r0,[r1]				/*Store contents into r0 for return*/
-   mov pc,lr				/*Return*/
+   ldr r1,=graphicsAddress      /*Load graphics address into r1*/
+   str r0,[r1]                  /*Store contents into r0 for return*/
+   mov pc,lr                    /*Return*/
 
 /*****************************************************************************/
 
@@ -147,7 +147,8 @@ DrawPixel:
 The Bresenham line algorithm is an algorithm which determines which points 
 in an n-dimensional raster should be plotted in order to form a close 
 approximation to a straight line between two given points. It is commonly 
-used to draw lines on a computer screen, as it uses only integer addition, subtraction and bit shifting, all of which are very cheap operations in 
+used to draw lines on a computer screen, as it uses only integer addition, 
+subtraction and bit shifting, all of which are very cheap operations in 
 standard computer architectures. It is one of the earliest algorithms 
 developed in the field of computer graphics. A minor extension to the 
 original algorithm also deals with drawing circles. 
@@ -158,39 +159,38 @@ original algorithm also deals with drawing circles.
 * Uses Bresenham's Line Algortihm, explained above.
 * C++ Signature: void DrawLine(u32x2 p1, u32x2 p2);
 */
-.globl DrawLine				/*Make this a global method*/
+.globl DrawLine             /*Make this a global method*/
 DrawLine:
    push {r4,r5,r6,r7,r8,r9,r10,r11,r12,lr} /*Push registers onto the stack*/
-   x0 .req r9				/*r9  is x0*/
-   x1 .req r10				/*r10 is x1*/
-   y0 .req r11				/*r11 is y0*/
-   y1 .req r12				/*r12 is y1*/
+   x0 .req r9               /*r9  is x0*/
+   x1 .req r10              /*r10 is x1*/
+   y0 .req r11              /*r11 is y0*/
+   y1 .req r12              /*r12 is y1*/
 
-   mov x0,r0				/*Move r0 to x0 (r9)*/
-   mov x1,r2				/*Move r2 to x1 (r10)*/
-   mov y0,r1				/*Move r1 to y0 (r11)*/
-   mov y1,r3				/*Move r3 to y1 (r12)*/
+   mov x0,r0                /*Move r0 to x0 (r9)*/
+   mov x1,r2                /*Move r2 to x1 (r10)*/
+   mov y0,r1                /*Move r1 to y0 (r11)*/
+   mov y1,r3                /*Move r3 to y1 (r12)*/
 
-   dx .req r4				/*r4 is aliased as dx*/
+   dx .req r4               /*r4 is aliased as dx*/
   
-   dyn .req r5 				/*???*/
-                            
+   dyn .req r5                            
 
-   sx .req r6				/*Alias r6 as sx*/
-   sy .req r7				/*Alias r7 as sy*/
-   err .req r8				/*Alias r8 as err*/
+   sx .req r6               /*Alias r6 as sx*/
+   sy .req r7               /*Alias r7 as sy*/
+   err .req r8              /*Alias r8 as err*/
 
-   cmp x0,x1				/*Compare x0 to x1*/
-   subgt dx,x0,x1			/*If > subtract x1 from x0, store in dx*/
-   movgt sx,#-1				/*If >, put #-1 in sx*/
-   suble dx,x1,x0			/*If <=, subtract x0 from x1. Store in dx*/
-   movle sx,#1				/*If <=, move #1 into sx*/
+   cmp x0,x1                /*Compare x0 to x1*/
+   subgt dx,x0,x1           /*If > subtract x1 from x0, store in dx*/
+   movgt sx,#-1             /*If >, put #-1 in sx*/
+   suble dx,x1,x0           /*If <=, subtract x0 from x1. Store in dx*/
+   movle sx,#1              /*If <=, move #1 into sx*/
 
-   cmp y0,y1				/*Same as above, but for y...*/
+   cmp y0,y1                /*Same as above, but for y...*/
    subgt dyn,y1,y0
    movgt sy,#-1
    suble dyn,y0,y1
-   movle sy,#1				/*...*/
+   movle sy,#1				
 
    add err,dx,dyn
    add x1,sx

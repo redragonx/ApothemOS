@@ -8,7 +8,7 @@
 *  Description: systemTime.s contains the code that interacts with the system 
 *               timer.
 *  
-*******************************************************************************/
+******************************************************************************/
 
  /*
  * The system timer runs at 1MHz, and just counts always. Thus we can deduce
@@ -63,19 +63,25 @@ Wait:
 	mov start,r0	/*Move lower four bytes to "start"*/
 
 	 /*
-	 * Next we need to compute the difference between the current counter 		 * value and the reading we just took, and then keep doing so until the 	 * gap between them is at least the size of delay.
+	 * Next we need to compute the difference between the current counter
+         * value and the reading we just took, and then keep doing so until the
+         * gap between them is at least the size of delay.
          */
 
 	loop$:
-	   bl GetTimeStamp	      /*Get the timestamp in r0, r1*/
-	   elapsed .req r1	      /*Alias r1 as "elapsed"*/
-	   sub elapsed,r0,start       /*Start time - elapsed time*/
-	   cmp elapsed,delay	      /*Compare delay to elapsed*/
-	   .unreq elapsed	      /*Unalias elapsed*/
-	      bls loop$		      /*If elapsed is less than delay, loop*/
+	   bl GetTimeStamp	 /*Get the timestamp in r0, r1*/
+	   elapsed .req r1	 /*Alias r1 as "elapsed"*/
+	   sub elapsed,r0,start  /*Start time - elapsed time*/
+	   cmp elapsed,delay	 /*Compare delay to elapsed*/
+	   .unreq elapsed	 /*Unalias elapsed*/
+	      bls loop$		 /*If elapsed is less than delay, loop*/
 		
 	.unreq delay	/*Unalias delay*/
 	.unreq start	/*Unalias start*/
 	pop {pc}	/*Return by popping pc*/
 
-/*****************************************************************************/
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/

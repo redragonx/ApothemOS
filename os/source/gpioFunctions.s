@@ -1,12 +1,11 @@
 /******************************************************************************
 *  FileName:gpioFunctions.s
 *  Authors: Stephen Chavez & Joshua Michael Waggoner
-*  Source: Baking Pi OS Tutorial - by Alex Chadwick
-*  Date: Mar 26, 2014
+*  Date: Apr 28, 2014
 *  Target: ARMv6 - Application Binary Interface (ABI) Compliant
 *
-*  Description: gpioFunctions.s contains the code that interacts with the system 
-*               gpio pins.
+*  Description: gpioFunctions.s contains the code that interacts with the 
+*               system gpio pins, turning them on or off.
 *  
 *******************************************************************************/
 
@@ -35,17 +34,14 @@
 *    | O           |23|  |24|           O |
 *    | O  Ground   |25|  |26|           O |
 *
-*-----------------------------------------------------------------------------/
+*-----------------------------------------------------------------------------*/
 
-
-
-
+.section .text     /* Text Section */
 
 /*****************************************************************************/
-/**************Beginning of gpio functions as of now. Vers 0.3****************/
+/*************************BEGINNING GPIO ON/OFF FUNCTIONS*********************/
 /*****************************************************************************/
 
-.section .text
 
 
 /*
@@ -80,43 +76,44 @@ ok:
 
 	okAct$:
 		mov r0,#16
-		bl SetGpio
+		b SetGpio
+		
 
 /*****************************************************************************/
 
 /*
 * gpio 0
 */
-.globl gpio0
+.global gpio0
 gpio0:
-        teq r1,#5
-	beq gpio0On$
-	teq r1,#6
-	beq gpio0Off$
+        teq r1,#8      /* gpio0 on = 8 characters*/
+	beq gpio0On$   /* If there's a possibility its ok on branch to okOn$*/
+	teq r1,#9      /* gpio0 off = 9 characters*/
+	beq gpio0Off$  /* If there's a possibility its ok off branch to okOn$*/
 	mov pc,lr
 
 	gpio0On$:
-		ldrb r2,[r0,#3]
-		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldrb r2,[r0,#6]
+		teq r2,#'o'      
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio0Act$
 
 	gpio0Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio0Act$:
 		mov r0,#0
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -124,36 +121,36 @@ gpio0:
 /*
 * gpio 1
 */
-.globl gpio1
+.global gpio1
 gpio1:
-        teq r1,#5
+        teq r1,#8
 	beq gpio1On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio1Off$
 	mov pc,lr
 
 	gpio1On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio1Act$
 
 	gpio1Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio1Act$:
 		mov r0,#1
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -161,36 +158,36 @@ gpio1:
 /*
 * gpio 2 
 */
-.globl gpio2
+.global gpio2
 gpio2:
-        teq r1,#5
+        teq r1,#8
 	beq gpio2On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio2Off$
 	mov pc,lr
 
 	gpio2On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio2Act$
 
 	gpio2Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio2Act$:
 		mov r0,#2
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -200,34 +197,34 @@ gpio2:
 */
 .global gpio3
 gpio3:
-        teq r1,#5
+        teq r1,#8
 	beq gpio3On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio3Off$
 	mov pc,lr
 
 	gpio3On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio3Act$
 
 	gpio3Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio3Act$:
 		mov r0,#3
-		bl SetGpio
+		b SetGpio
 
 
 /****************************************************************************/
@@ -237,34 +234,34 @@ gpio3:
 */
 .global gpio4
 gpio4:
-        teq r1,#5
+        teq r1,#8
 	beq gpio4On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio4Off$
 	mov pc,lr
 
 	gpio4On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio4Act$
 
 	gpio4Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio4Act$:
 		mov r0,#4
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -276,34 +273,34 @@ gpio4:
 */
 .global gpio5
 gpio5:
-        teq r1,#5
+        teq r1,#8
 	beq gpio5On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio5Off$
 	mov pc,lr
 
 	gpio5On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio5Act$
 
 	gpio5Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio5Act$:
 		mov r0,#5
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -314,34 +311,34 @@ gpio5:
 */
 .global gpio6
 gpio6:
-        teq r1,#5
+        teq r1,#8
 	beq gpio6On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio6Off$
 	mov pc,lr
 
 	gpio6On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio6Act$
 
 	gpio6Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio6Act$:
 		mov r0,#6
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -352,34 +349,34 @@ gpio6:
 */
 .global gpio7
 gpio7:
-        teq r1,#5
+        teq r1,#8
 	beq gpio7On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio7Off$
 	mov pc,lr
 
 	gpio7On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio7Act$
 
 	gpio7Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio7Act$:
 		mov r0,#7
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -389,34 +386,34 @@ gpio7:
 */
 .global gpio8
 gpio8:
-        teq r1,#5
+        teq r1,#8
 	beq gpio8On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio8Off$
 	mov pc,lr
 
 	gpio8On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio8Act$
 
 	gpio8Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio8Act$:
 		mov r0,#8
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -426,71 +423,74 @@ gpio8:
 */
 .global gpio9
 gpio9:
-        teq r1,#5
+        teq r1,#8
 	beq gpio9On$
-	teq r1,#6
+	teq r1,#9
 	beq gpio9Off$
 	mov pc,lr
 
 	gpio9On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio9Act$
 
 	gpio9Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#6]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#7]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio9Act$:
 		mov r0,#9
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
+
+
+/*************>>>>>>>>>>>>>>>>>>>>>>I'm here<<<<<<<<<<<<<<<*******************/
 
 /*
 * gpio 10 
 */
 .global gpio10
 gpio10:
-        teq r1,#5
+        teq r1,#9
 	beq gpio10On$
-	teq r1,#6
+	teq r1,#10
 	beq gpio10Off$
 	mov pc,lr
 
 	gpio10On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio10Act$
 
 	gpio10Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#9]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio10Act$:
 		mov r0,#10
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -500,34 +500,34 @@ gpio10:
 */
 .global gpio11
 gpio11:
-        teq r1,#5
+        teq r1,#9
 	beq gpio11On$
-	teq r1,#6
+	teq r1,#10
 	beq gpio11Off$
 	mov pc,lr
 
 	gpio11On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio11Act$
 
 	gpio11Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#9]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio11Act$:
 		mov r0,#11
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -537,34 +537,34 @@ gpio11:
 */
 .global gpio12
 gpio12:
-        teq r1,#5
+        teq r1,#9
 	beq gpio12On$
-	teq r1,#6
+	teq r1,#10
 	beq gpio12Off$
 	mov pc,lr
 
 	gpio12On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio12Act$
 
 	gpio12Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#9]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio12Act$:
 		mov r0,#12
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -574,34 +574,34 @@ gpio12:
 */
 .global gpio13
 gpio13:
-        teq r1,#5
+        teq r1,#9
 	beq gpio13On$
-	teq r1,#6
+	teq r1,#10
 	beq gpio13Off$
 	mov pc,lr
 
 	gpio13On$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'n'
 		movne pc,lr
 		mov r1,#0
 		b gpio13Act$
 
 	gpio13Off$:
-		ldrb r2,[r0,#3]
+		ldrb r2,[r0,#7]
 		teq r2,#'o'
-		ldreqb r2,[r0,#4]
+		ldreqb r2,[r0,#8]
 		teqeq r2,#'f'
-		ldreqb r2,[r0,#5]
+		ldreqb r2,[r0,#9]
 		teqeq r2,#'f'
 		movne pc,lr
 		mov r1,#1
 
 	gpio13Act$:
 		mov r0,#13
-		bl SetGpio
+		b SetGpio
 
 
 /*****************************************************************************/
@@ -611,34 +611,34 @@ gpio13:
 */
 .global gpio14
 gpio14:
-     teq r1,#5
+     teq r1,#9
      beq gpio14On$
-     teq r1,#6
+     teq r1,#10
      beq gpio14Off$
      mov pc,lr
 
      gpio14On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio14Act$
 
      gpio14Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio14Act$:
           mov r0,#14
-          bl SetGpio
+          b SetGpio
 
 /*****************************************************************************/
 
@@ -647,34 +647,34 @@ gpio14:
 */
 .global gpio15
 gpio15:
-     teq r1,#5
+     teq r1,#9
      beq gpio15On$
-     teq r1,#6
+     teq r1,#10
      beq gpio15Off$
      mov pc,lr
 
      gpio15On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio15Act$
 
      gpio15Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio15Act$:
           mov r0,#15
-          bl SetGpio
+          b SetGpio
 
 /*****************************************************************************/
 
@@ -683,34 +683,36 @@ gpio15:
 */
 .global gpio16
 gpio16:
-     teq r1,#5
+    
+     teq r1,#9
      beq gpio16On$
-     teq r1,#6
+     teq r1,#10
      beq gpio16Off$
      mov pc,lr
 
      gpio16On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio16Act$
 
      gpio16Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio16Act$:
           mov r0,#16
-          bl SetGpio
+          b SetGpio
+        
 
 /*****************************************************************************/
 
@@ -719,34 +721,34 @@ gpio16:
 */
 .global gpio17
 gpio17:
-     teq r1,#5
+     teq r1,#9
      beq gpio17On$
-     teq r1,#6
+     teq r1,#10
      beq gpio17Off$
      mov pc,lr
 
      gpio17On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio17Act$
 
      gpio17Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
-          mov r1,#1
+          mov r1,#17
 
      gpio17Act$:
           mov r0,#17
-          bl SetGpio
+          b SetGpio
 
 /*****************************************************************************/
 
@@ -755,34 +757,34 @@ gpio17:
 */
 .global gpio18
 gpio18:
-     teq r1,#5
+     teq r1,#9
      beq gpio18On$
-     teq r1,#6
+     teq r1,#10
      beq gpio18Off$
      mov pc,lr
 
      gpio18On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio18Act$
 
      gpio18Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio18Act$:
           mov r0,#18
-          bl SetGpio
+          b SetGpio
 
 /*****************************************************************************/
 
@@ -791,34 +793,34 @@ gpio18:
 */
 .global gpio19
 gpio19:
-     teq r1,#5
+     teq r1,#9
      beq gpio19On$
-     teq r1,#6
+     teq r1,#10
      beq gpio19Off$
      mov pc,lr
 
      gpio19On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio19Act$
 
      gpio19Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio19Act$:
           mov r0,#19
-          bl SetGpio
+          b SetGpio
 
 /*****************************************************************************/
 
@@ -827,27 +829,27 @@ gpio19:
 */
 .global gpio20
 gpio20:
-     teq r1,#5
+     teq r1,#9
      beq gpio20On$
-     teq r1,#6
+     teq r1,#10
      beq gpio20Off$
      mov pc,lr
 
      gpio20On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio20Act$
 
      gpio20Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -865,27 +867,27 @@ gpio20:
 */
 .global gpio21
 gpio21:
-     teq r1,#5
+     teq r1,#9
      beq gpio21On$
-     teq r1,#6
+     teq r1,#10
      beq gpio21Off$
      mov pc,lr
 
      gpio21On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio21Act$
 
      gpio21Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -901,27 +903,27 @@ gpio21:
 */
 .global gpio22
 gpio22:
-     teq r1,#5
+     teq r1,#9
      beq gpio22On$
-     teq r1,#6
+     teq r1,#10
      beq gpio22Off$
      mov pc,lr
 
      gpio22On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio22Act$
 
      gpio22Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -937,27 +939,27 @@ gpio22:
 */
 .global gpio23
 gpio23:
-     teq r1,#5
+     teq r1,#9
      beq gpio23On$
-     teq r1,#6
+     teq r1,#10
      beq gpio23Off$
      mov pc,lr
 
      gpio23On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio23Act$
 
      gpio23Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -973,27 +975,27 @@ gpio23:
 */
 .global gpio24
 gpio24: 
-     teq r1,#5
+     teq r1,#9
      beq gpio24On$
-     teq r1,#6
+     teq r1,#10
      beq gpio24Off$
      mov pc,lr
 
      gpio24On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio24Act$
 
      gpio24Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1009,27 +1011,27 @@ gpio24:
 */
 .global gpio25
 gpio25:
-     teq r1,#5
+     teq r1,#9
      beq gpio25On$
-     teq r1,#6
+     teq r1,#10
      beq gpio25Off$
      mov pc,lr
 
      gpio25On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio25Act$
 
      gpio25Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1045,27 +1047,27 @@ gpio25:
 */
 .global gpio26
 gpio26:
-     teq r1,#5
+     teq r1,#9
      beq gpio26On$
-     teq r1,#6
+     teq r1,#10
      beq gpio26Off$
      mov pc,lr
 
      gpio26On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio26Act$
 
      gpio26Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1083,33 +1085,33 @@ gpio26:
 */
 .global gpio27
 gpio27:
-     teq r1,#5
+     teq r1,#9
      beq gpio27On$
-     teq r1,#6
+     teq r1,#10
      beq gpio27Off$
      mov pc,lr
 
      gpio27On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio27Act$
 
      gpio27Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio27Act$:
-          mov r0,#26
+          mov r0,#27
           b SetGpio
 
 /*****************************************************************************/
@@ -1120,27 +1122,27 @@ gpio27:
 */
 .global gpio28
 gpio28:
-     teq r1,#5
+     teq r1,#9
      beq gpio28On$
-     teq r1,#6
+     teq r1,#10
      beq gpio28Off$
      mov pc,lr
 
      gpio28On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio28Act$
 
      gpio28Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1156,27 +1158,27 @@ gpio28:
 */
 .global gpio29
 gpio29:
-     teq r1,#5
+     teq r1,#9
      beq gpio29On$
-     teq r1,#6
+     teq r1,#10
      beq gpio29Off$
      mov pc,lr
 
      gpio29On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio29Act$
 
      gpio29Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1192,27 +1194,27 @@ gpio29:
 */
 .global gpio30
 gpio30:
-     teq r1,#5
+     teq r1,#9
      beq gpio30On$
-     teq r1,#6
+     teq r1,#10
      beq gpio30Off$
      mov pc,lr
 
      gpio30On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio30Act$
 
      gpio30Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1228,27 +1230,27 @@ gpio30:
 */
 .global gpio31
 gpio31:
-     teq r1,#5
+     teq r1,#9
      beq gpio31On$
-     teq r1,#6
+     teq r1,#10
      beq gpio31Off$
      mov pc,lr
 
      gpio31On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio31Act$
 
      gpio31Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1264,27 +1266,27 @@ gpio31:
 */
 .global gpio32
 gpio32:
-     teq r1,#5
+     teq r1,#9
      beq gpio32On$
-     teq r1,#6
+     teq r1,#10
      beq gpio32Off$
      mov pc,lr
 
      gpio32On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio32Act$
 
      gpio32Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1300,27 +1302,27 @@ gpio32:
 */
 .global gpio33
 gpio33:
-     teq r1,#5
+     teq r1,#9
      beq gpio33On$
-     teq r1,#6
+     teq r1,#10
      beq gpio33Off$
      mov pc,lr
 
      gpio33On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio33Act$
 
      gpio33Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1336,27 +1338,27 @@ gpio33:
 */
 .global gpio34
 gpio34:
-     teq r1,#5
+     teq r1,#9
      beq gpio34On$
-     teq r1,#6
+     teq r1,#10
      beq gpio34Off$
      mov pc,lr
 
      gpio34On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio34Act$
 
      gpio34Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1372,27 +1374,27 @@ gpio34:
 */
 .global gpio35
 gpio35:
-     teq r1,#5
+     teq r1,#9
      beq gpio35On$
-     teq r1,#6
+     teq r1,#10
      beq gpio35Off$
      mov pc,lr
 
      gpio35On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio35Act$
 
      gpio35Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1408,27 +1410,27 @@ gpio35:
 */
 .global gpio36
 gpio36:
-     teq r1,#5
+     teq r1,#9
      beq gpio36On$
-     teq r1,#6
+     teq r1,#10
      beq gpio36Off$
      mov pc,lr
 
      gpio36On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio36Act$
 
      gpio36Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1444,27 +1446,27 @@ gpio36:
 */
 .global gpio37
 gpio37:
-     teq r1,#5
+     teq r1,#9
      beq gpio37On$
-     teq r1,#6
+     teq r1,#10
      beq gpio37Off$
      mov pc,lr
 
      gpio37On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio37Act$
 
      gpio37Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1480,27 +1482,27 @@ gpio37:
 */
 .global gpio38
 gpio38:
-     teq r1,#5
+     teq r1,#9
      beq gpio38On$
-     teq r1,#6
+     teq r1,#10
      beq gpio38Off$
      mov pc,lr
 
      gpio38On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio38Act$
 
      gpio38Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1516,27 +1518,27 @@ gpio38:
 */
 .global gpio39
 gpio39:
-     teq r1,#5
+     teq r1,#9
      beq gpio39On$
-     teq r1,#6
+     teq r1,#10
      beq gpio39Off$
      mov pc,lr
 
      gpio39On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio39Act$
 
      gpio39Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1552,27 +1554,27 @@ gpio39:
 */
 .global gpio40
 gpio40:
-     teq r1,#5
+     teq r1,#9
      beq gpio40On$
-     teq r1,#6
+     teq r1,#10
      beq gpio40Off$
      mov pc,lr
 
      gpio40On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio40Act$
 
      gpio40Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1588,27 +1590,27 @@ gpio40:
 */
 .global gpio41
 gpio41:
-     teq r1,#5
+     teq r1,#9
      beq gpio41On$
-     teq r1,#6
+     teq r1,#10
      beq gpio41Off$
      mov pc,lr
 
      gpio41On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio41Act$
 
      gpio41Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1624,33 +1626,33 @@ gpio41:
 */
 .global gpio42
 gpio42:
-     teq r1,#5
+     teq r1,#9
      beq gpio42On$
-     teq r1,#6
+     teq r1,#10
      beq gpio42Off$
      mov pc,lr
 
      gpio42On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio42Act$
 
      gpio42Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
 
      gpio42Act$:
-          mov r0,#26
+          mov r0,#42
           b SetGpio
 
 /*****************************************************************************/
@@ -1660,27 +1662,27 @@ gpio42:
 */
 .global gpio43
 gpio43:
-     teq r1,#5
+     teq r1,#9
      beq gpio43On$
-     teq r1,#6
+     teq r1,#10
      beq gpio43Off$
      mov pc,lr
 
      gpio43On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio43Act$
 
      gpio43Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1696,27 +1698,27 @@ gpio43:
 */
 .global gpio44
 gpio44:
-     teq r1,#5
+     teq r1,#9
      beq gpio44On$
-     teq r1,#6
+     teq r1,#10
      beq gpio44Off$
      mov pc,lr
 
      gpio44On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio44Act$
 
      gpio44Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1732,27 +1734,27 @@ gpio44:
 */
 .global gpio45
 gpio45:
-     teq r1,#5
+     teq r1,#9
      beq gpio45On$
-     teq r1,#6
+     teq r1,#10
      beq gpio45Off$
      mov pc,lr
 
      gpio45On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio45Act$
 
      gpio45Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1768,27 +1770,27 @@ gpio45:
 */
 .global gpio46
 gpio46:
-     teq r1,#5
+     teq r1,#9
      beq gpio46On$
-     teq r1,#6
+     teq r1,#10
      beq gpio46Off$
      mov pc,lr
 
      gpio46On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio46Act$
 
      gpio46Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1804,27 +1806,27 @@ gpio46:
 */
 .global gpio47
 gpio47:
-     teq r1,#5
+     teq r1,#9
      beq gpio47On$
-     teq r1,#6
+     teq r1,#10
      beq gpio47Off$
      mov pc,lr
 
      gpio47On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio47Act$
 
      gpio47Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1840,27 +1842,27 @@ gpio47:
 */
 .global gpio48
 gpio48:
-     teq r1,#5
+     teq r1,#9
      beq gpio48On$
-     teq r1,#6
+     teq r1,#10
      beq gpio48Off$
      mov pc,lr
 
      gpio48On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio48Act$
 
      gpio48Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1876,27 +1878,27 @@ gpio48:
 */
 .global gpio49
 gpio49:
-     teq r1,#5
+     teq r1,#9
      beq gpio49On$
-     teq r1,#6
+     teq r1,#10
      beq gpio49Off$
      mov pc,lr
 
      gpio49On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio49Act$
 
      gpio49Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1912,27 +1914,27 @@ gpio49:
 */
 .global gpio50
 gpio50:
-     teq r1,#5
+     teq r1,#9
      beq gpio50On$
-     teq r1,#6
+     teq r1,#10
      beq gpio50Off$
      mov pc,lr
 
      gpio50On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio50Act$
 
      gpio50Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1948,27 +1950,27 @@ gpio50:
 */
 .global gpio51
 gpio51:
-     teq r1,#5
+     teq r1,#9
      beq gpio51On$
-     teq r1,#6
+     teq r1,#10
      beq gpio51Off$
      mov pc,lr
 
      gpio51On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio51Act$
 
      gpio51Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -1984,27 +1986,27 @@ gpio51:
 */
 .global gpio52
 gpio52:
-     teq r1,#5
+     teq r1,#9
      beq gpio52On$
-     teq r1,#6
+     teq r1,#10
      beq gpio52Off$
      mov pc,lr
 
      gpio52On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio52Act$
 
      gpio52Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -2022,27 +2024,27 @@ gpio52:
 */
 .global gpio53
 gpio53:
-     teq r1,#5
+     teq r1,#9
      beq gpio43On$
-     teq r1,#6
+     teq r1,#10
      beq gpio53Off$
      mov pc,lr
 
      gpio53On$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'n'
           movne pc,lr
           mov r1,#0
           b gpio53Act$
 
      gpio53Off$:
-          ldrb r2,[r0,#3]
+          ldrb r2,[r0,#7]
           teq r2,#'o'
-          ldreqb r2,[r0,#4]
+          ldreqb r2,[r0,#8]
           teqeq r2,#'f'
-          ldreqb r2,[r0,#5]
+          ldreqb r2,[r0,#9]
           teqeq r2,#'f'
           movne pc,lr
           mov r1,#1
@@ -2052,5 +2054,11 @@ gpio53:
           b SetGpio
 
 /*****************************************************************************/
+/**************************End GPIO ON/OFF FUNCTIONS**************************/
+/*****************************************************************************/
 
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
 

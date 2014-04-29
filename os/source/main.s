@@ -27,6 +27,11 @@ _start:
 */
 b main
 
+
+/****************************************************************************/
+/**********************************Text Section******************************/
+/****************************************************************************/
+
 /*
 * This command tells the assembler to put this code with the rest.
 */
@@ -154,62 +159,95 @@ loop$:
 		teq r9,#0
 		bne commandLoop$	
 
-	ldr r0,=commandUnknown
-	mov r1,#commandUnknownEnd-commandUnknown
-	ldr r2,=formatBuffer
-	ldr r3,=command
-	bl FormatString
+	        ldr r0,=commandUnknown
+	        mov r1,#commandUnknownEnd-commandUnknown
+	        ldr r2,=formatBuffer
+	        ldr r3,=command
+	        bl FormatString
 
-	mov r1,r0
-	ldr r0,=formatBuffer
-	bl Print
+	        mov r1,r0
+	        ldr r0,=formatBuffer
+	        bl Print
 
-loopContinue$:
-	bl TerminalDisplay
-        
+        loopContinue$:
+	        bl TerminalDisplay
+	        b loop$
 
-	b loop$
-
- 
-/*************************************End Main********************************/
+/*---------------------------------------------------------------------------*/
 
 /*
 * echo returns a sting back to the user
 */
 echo:
-   cmp r1,#5                         /*Compare co*/
-   movle pc,lr
+	cmp r1,#5            /*Compare r1 and 5*/
+	movle pc,lr          /*if the whle string is null, return*/
 
-   add r0,#5
-   sub r1,#5 
-   b Print
+	add r0,#5            /**/
+	sub r1,#5            
+	b Print
 
 /*
-* batmansay returns a sting back to the user (for now...vers 0.3)
+/*****************************************************************************/
+/*
+* help shows the user a help menu
+*/
+help:
+   b PrintHelp        /* Branch to the print help screen*/
+
+/****************************************************************************/
+
+
+
+/*
+* batmansay returns a sting back to the user, as said by batman himself
 */
 batmansay:
    
+   cmp r1,#10          /* Compare r1 and 10 */
+   movle pc,lr         /* If the whle string is null, return */
+   add r0,#10          /* Add 10 to r0 */
+   sub r1,#10          /* Subtract 10 from r1 */             
+   b PrintBatman       /* Branch to the print batmansays screen*/
+
+
+/*****************************************************************************/
+
+/*
+* zeldasay returns a sting back to the user, as said by zelda herself
+*/
+zeldasay:
    
-   cmp r1, #10
-   add r0, #10
-   sub r1, #10
-   bl Print
-
-   ldr r0,=batmansay
-   ldr r1,=batmanStringLength
-   bl Print
+   cmp r1,#9          /* Compare r1 and 10 */
+   movle pc,lr        /* If the whle string is null, return */
+   add r0,#9          /* Add 10 to r0 */
+   sub r1,#9          /* Subtract 10 from r1 */             
+   b PrintZelda       /* Branch to the print zeldasays screen*/
 
 
 
 /*****************************************************************************/
-/**********************************Data Section*******************************/
-/*****************************************************************************/
 
+
+
+
+
+/****************************************************************************/
+/**********************************Data Section******************************/
+/****************************************************************************/
+
+
+/*
+* Data section
+*/
 .section .data
+
+/****************************************************************************/
+/**********************************Intro Screen******************************/
+/****************************************************************************/
 
 .align 2
 welcome:
-  .ascii "\n.__________________________________________________."
+  .ascii ".__________________________________________________."
   .ascii "\n||////////////////////////////////////////////////||"
   .ascii "\n||//By Stephen @redragonx/////////////////////////||"
   .ascii "\n||////////////and/////////////////////////////////||"
@@ -250,17 +288,9 @@ welcome:
   .ascii "\n"
   .ascii "\nFor a list of commands, simply type 'help' into the terminal"
   .ascii "\n"
-
 welcomeEnd:
 
-
-
-
-
-/****************************************************************************/
-/******************************End New Intro Screen**************************/
-/****************************************************************************/
-
+/*****************************************************************************/
 
 .align 2
 prompt:
@@ -288,79 +318,30 @@ formatBuffer:
 	.endr
 formatEnd:
 
-.align 2
-quotes: 
-   .ascii "'"
-
-
-/*****************************************************************************/
-
-.align 2
-batman:
-   
-.ascii"\n                     Tb.          Tb."                                
-.ascii"\n                     :$$b.        $$$b."                              
-.ascii"\n                     :$$$$b.      :$$$$b."                            
-.ascii"\n                     :$$$$$$b     :$$$$$$b"                           
-.ascii"\n                      $$$$$$$b     $$$$$$$b"                          
-.ascii"\n                      $$$$$$$$b    :$$$$$$$b"                         
-.ascii"\n                      :$$$$$$$$b---^$$$$$$$$b"                        
-.ascii"\n                      :$$$$$$$$$b        ''^Tb"                       
-.ascii"\n                       $$$$$$$$$$b    __...__`."                      
-.ascii"\n                       $$$$$$$$$$$b.g$$$$$$$$$pb"                     
-.ascii"\n                       $$$$$$$$$$$$$$$$$$$$$$$$$b"                    
-.ascii"\n                       $$$$$$$$$$$$$$$$$$$$$$$$$$b"                   
-.ascii"\n                       :$$$$$$$$$$$$$$$$$$$$$$$$$$;"                  
-.ascii"\n                       :$$$$$$$$$$$$$^T$$$$$$$$$$P;"                  
-.ascii"\n                       :$$$$$$$$$$$$$b  '^T$$$$P' :"                  
-.ascii"\n                       :$$$$$$$$$$$$$$b._.g$$$$$p.db"
-.ascii"\n                       :$$$$$$$$$$$$$$$$$$$$$$$$$$$$;"                
-.ascii"\n                       :$$$$$$$$'''''T$$$$$$$$$$$$P';"                
-.ascii"\n                       :$$$$$$$$       ''^^T$$$P^'  ;"                
-.ascii"\n                       :$$$$$$$$    .'       `'     ;"                
-.ascii"\n                       $$$$$$$$;   /                :"
-.ascii"\n                       $$$$$$$$;           .----,    :"
-.ascii"\n                       $$$$$$$$;         ,'          ;"
-.ascii"\n                       $$$$$$$$$p.                   |"
-.ascii"\n                      :$$$$$$$$$$$$p.                :"
-.ascii"\n                      :$$$$$$$$$$$$$$$p.            .'"
-.ascii"\n                      :$$$$$$$$$$$$$$$$$$p...___..--"
-.ascii"\n                      $$$$$$$$$$$$$$$$$$$$$$$$$;"
-.ascii"\n   .db.               $$$$$$$$$$$$$$$$$$$$$$$$$$"
-.ascii"\n  d$$$$bp.            $$$$$$$$$$$$$$$$$$$$$$$$$$;"
-.ascii"\n d$$$$$$$$$$pp..__..gg$$$$$$$$$$$$$$$$$$$$$$$$$$$"
-.ascii"\nd$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$p._            .gp."
-.ascii"\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$p._.ggp._.d$$$$b"
-.ascii"\n©2014 chris.com"
-
-batmanEnd:
-
-/*****************************************************************************/
 
 /*****************************************************************************/
 /************************Command Strings definitions**************************/
 /*****************************************************************************/
 
-
-
-
 .align 2
-commandStringEcho: .ascii "echo"
-commandStringReset: .ascii "reset"
-commandStringOk: .ascii "ok"
-commandStringCls: .ascii "cls"
-
+commandStringEcho:       .ascii      "echo"
+commandStringHelp:       .ascii      "help"
+commandStringBatmansay:  .ascii      "batmansay"
+commandStringZeldasay:   .ascii      "zeldasay"
+commandStringReset:      .ascii      "reset"
+commandStringOk:         .ascii      "ok"
+commandStringCls:        .ascii      "cls"
 /*
-*Begin - Experimental section. Proceed with caution. Vers 0.3
+* GPIO ascii definitions. Added Vers 0.4
 */
 commandStringGpio0:  .ascii "gpio0"
 commandStringGpio1:  .ascii "gpio1"
 commandStringGpio2:  .ascii "gpio2"
 commandStringGpio3:  .ascii "gpio3"
 commandStringGpio4:  .ascii "gpio4"
-commandStringGpio5:  .ascii "gpio4"
-commandStringGpio6:  .ascii "gpio7"
-commandStringGpio7:  .ascii "gpio4"
+commandStringGpio5:  .ascii "gpio5"
+commandStringGpio6:  .ascii "gpio6"
+commandStringGpio7:  .ascii "gpio7"
 commandStringGpio8:  .ascii "gpio8"
 commandStringGpio9:  .ascii "gpio9"
 commandStringGpio10: .ascii "gpio10"
@@ -393,7 +374,7 @@ commandStringGpio36: .ascii "gpio36"
 commandStringGpio37: .ascii "gpio37"
 commandStringGpio38: .ascii "gpio38"
 commandStringGpio39: .ascii "gpio39"
-commandStringGpio40: .ascii "gpio4"
+commandStringGpio40: .ascii "gpio40"
 commandStringGpio41: .ascii "gpio41"
 commandStringGpio42: .ascii "gpio42"
 commandStringGpio43: .ascii "gpio43"
@@ -403,18 +384,14 @@ commandStringGpio46: .ascii "gpio46"
 commandStringGpio47: .ascii "gpio47"
 commandStringGpio48: .ascii "gpio48"
 commandStringGpio49: .ascii "gpio49"
-commandStringGpio50: .ascii "gpio4"
-commandStringGpio51: .ascii "gpio41"
-commandStringGpio52: .ascii "gpio42"
-commandStringGpio53: .ascii "gpio43"
-commandStringBatmansay: .ascii "batmansay"
-
+commandStringGpio50: .ascii "gpio50"
+commandStringGpio51: .ascii "gpio51"
+commandStringGpio52: .ascii "gpio52"
+commandStringGpio53: .ascii "gpio53"
 commandStringEnd:
 
-
-/*****************************************************************************/
 /*********************End Command Strings definitions*************************/
-/*****************************************************************************/
+
 
 
 /*****************************************************************************/
@@ -422,13 +399,15 @@ commandStringEnd:
 /*****************************************************************************/
 .align 2
 commandTable:
-.int commandStringEcho, echo
-.int commandStringReset, reset$
-.int commandStringOk, ok
-.int commandStringCls, TerminalClear
-
+.int commandStringEcho,        echo
+.int commandStringHelp,        help
+.int commandStringBatmansay,   batmansay
+.int commandStringZeldasay,    zeldasay
+.int commandStringReset,       reset$
+.int commandStringOk,          ok
+.int commandStringCls,         TerminalClear
 /*
-* Begin - Experimental section. Added Vers 0.3
+* GPIO command table string definitions. Added Vers 0.4
 */
 .int commandStringGpio0,  gpio0
 .int commandStringGpio1,  gpio1
@@ -484,21 +463,19 @@ commandTable:
 .int commandStringGpio51, gpio51
 .int commandStringGpio52, gpio52
 .int commandStringGpio53, gpio53
-.int commandStringBatmansay, batmansay
 .int commandStringEnd, 0
 
-/*
-* End - Experimental section. Added Vers 0.3
-*/
-
-/*****************************************************************************/
 /****************************End Command Table********************************/
-/*****************************************************************************/
 
+/*
+* Welcome string length definition
+*/
 .align 2
 welcomeStringLength:
 .int welcomeEnd-welcome
 
-.align 2
-batmanStringLength:
-.int batmanEnd-batman
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
