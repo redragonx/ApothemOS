@@ -15,7 +15,7 @@
 * C++ Signature: u32x2 DivideU32(u32 dividend, u32 divisor);
 * This is implemented as binary long division.
 */
-.globl DivideU32
+.global DivideU32
 DivideU32:
 	result .req r0
 	remainder .req r1
@@ -52,3 +52,8 @@ divideU32Return$:
 	.unreq result
 	.unreq remainder
 	.unreq shift
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/

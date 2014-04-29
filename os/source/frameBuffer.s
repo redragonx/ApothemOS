@@ -13,6 +13,9 @@
 *  
 *****************************************************************************/
 
+/*
+* Data Section
+*/
 .section .data 	  /* Defines this as a data section*/
 
 .align 12        /* This ensures the lowest 4 bits of 
@@ -24,20 +27,25 @@
                   */
 
 /* 
+* FrameBuffer Info
+*
 * When communicating with the graphics card about frame buffers, a message 
 * consists of a pointer to the structure below. The comments explain what each
 * member of the structure is.
 * The .align 12 is necessary to ensure correct communication with the GPU, 
 * which expects page alignment.
+*
 * C++ Signature: 
 * struct FrameBuferDescription {
 *  u32 width; u32 height; u32 vWidth; u32 vHeight; u32 pitch; u32 bitDepth;
 *  u32 x; u32 y; void* pointer; u32 size;
 * };
+*
 * FrameBuferDescription FrameBufferInfo =
 *		{ 1024, 768, 1024, 768, 0, 24, 0, 0, 0, 0 };
+*
 */
-.globl FrameBufferInfo 		/* Makes this a global function*/
+.global FrameBufferInfo 		/* Makes this a global function*/
 FrameBufferInfo:		/* Start of FrameBufferInfo*/
 
 .int 1024 	    /* #0 Physical Width */
@@ -59,14 +67,13 @@ FrameBufferInfo:		/* Start of FrameBufferInfo*/
 * time systems. While blocking, this procedure causes the OK LED to flash.
 * If the frame buffer cannot be created, this procedure returns 0.
 * 
-* C++ Signature: FrameBuferDescription* InitialiseFrameBuffer(u32 width,
-*		                                                     u32 height,
-*                                                            u32 bitDepth)
+* C++ Signature: FrameBuferDescription* 
+*                InitialiseFrameBuffer(u32 width, u32 height, u32 bitDepth)
 */
 
 .section .text               /* Define as text section*/
 
-.globl InitialiseFrameBuffer /* Make this a global method*/
+.global InitialiseFrameBuffer /* Make this a global method*/
 InitialiseFrameBuffer:
 
 /*
@@ -94,14 +101,14 @@ InitialiseFrameBuffer:
    fbInfoAddr .req r4              /*Alias r4 as fbInfoAddr*/	
    ldr fbInfoAddr,=FrameBufferInfo /*Load frame buffer info in r4*/
    str width,[r4,#0]               /*Write width into r4's lowest 4 bits*/
-   str height,[r4,#4]              /*Write height to r4's 2nd lowest 4 bits*/
-   str width,[r4,#8]               /*Write vwidth into r4's 3rd lowest 4 bits*/
-   str height,[r4,#12]             /*Write vwidth into r4's 4th lowest 4 bits*/
-   str bitDepth,[r4,#20]           /*Write bitDepth into r4's fifth owest 4 bits*/
+   str height,[r4,#4]           /*Write height to r4's 2nd lowest 4 bits*/
+   str width,[r4,#8]            /*Write vwidth into r4's 3rd lowest 4 bits*/
+   str height,[r4,#12]          /*Write vwidth into r4's 4th lowest 4 bits*/
+   str bitDepth,[r4,#20]        /*Write bitDepth into r4's fifth owest 4 bits*/
 
-   .unreq width	                   /*Unalias width*/
-   .unreq height                   /*Unalias height*/
-   .unreq bitDepth                 /*Unalias bitDepth*/
+   .unreq width	                /*Unalias width*/
+   .unreq height                /*Unalias height*/
+   .unreq bitDepth              /*Unalias bitDepth*/
 
 /*
 * 3) The inputs to the MailboxWrite method are the value to write in r0, 
@@ -116,35 +123,37 @@ InitialiseFrameBuffer:
                              * able to see the change.
                              */
 
-   mov r1,#1                       /* move 1 into r1 */
+   mov r1,#1                /* move 1 into r1 */
     
-   bl MailboxWrite           /* Write to mailbox the frame buffer 
-                              * info and the channel and branch 
-                              * back
-                              */
+   bl MailboxWrite          /* Write to mailbox the frame buffer 
+                             * info and the channel and branch 
+                             * back
+                             */
 /*
 * 4) The inputs to the MailboxRead method is the channel to write to in r0, 
 *    and the output is the value read.
 */	
 
-   mov r0, #1                      /* Move 1 into r0*/		
-   bl MailboxRead                  /* Branch to MailboxRead and back */
+   mov r0, #1               /* Move 1 into r0*/		
+   bl MailboxRead           /* Branch to MailboxRead and back */
 /*
 * 5) This code checks if the result of the MailboxRead method is 0, and 
 *    returns 0 if not.
 */	
 	
-   teq result, #0                  /*See if result is 0*/
-   movne result ,#0                /*Return 0 if not*/
-   popne {r4,pc}                   /*Pop r4 and pc if not*/
+   teq result, #0           /*See if result is 0*/
+   movne result ,#0         /*Return 0 if not*/
+   popne {r4,pc}            /*Pop r4 and pc if not*/
 
 /*
 * 5) This code finishes off and returns the frame buffer info address.
 */
 
-   mov result,fbInfoAddr           /*Move frame buffer info into r0*/
-   pop {r4,pc}                     /*Pop r4 and pc*/
-   .unreq result                   /*Unalias result*/
-   .unreq fbInfoAddr               /*Unalias fbInfoAddr*/
+   mov result,fbInfoAddr    /*Move frame buffer info into r0*/
+   pop {r4,pc}              /*Pop r4 and pc*/
+   .unreq result            /*Unalias result*/
+   .unreq fbInfoAddr        /*Unalias fbInfoAddr*/
 
-/****************************************************************************/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/

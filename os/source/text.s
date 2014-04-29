@@ -14,7 +14,7 @@
 * ReverseString reverses a string, with pointer in r0, and length in r1.
 * C++ Signature: void ReverseString(char* string, u32 length);
 */
-.globl ReverseString
+.global ReverseString
 ReverseString:
 	start .req r0
 	end .req r1
@@ -41,7 +41,7 @@ ReverseString:
 * between 2 and 36.
 * C++ Signature: u32 UnsignedString(u32 value, char* string, u32 base)
 */
-.globl UnsignedString
+.global UnsignedString
 UnsignedString:
 	value .req r0
 	string .req r5
@@ -85,7 +85,7 @@ UnsignedString:
 * between 2 and 36.
 * C++ Signature: u32 SignedString(s32 value, char* string, u32 base);
 */
-.globl SignedString
+.global SignedString
 SignedString:
 	value .req r0
 	string .req r1
@@ -120,7 +120,7 @@ SignedString:
 *  %b outputs the next argument as a binary number.
 *  %o outputs the next argument as a octal number.
 */
-.globl FormatString
+.global FormatString
 FormatString:
 	format .req r4
 	formatLength .req r5
@@ -232,4 +232,9 @@ FormatString:
 		addne dest,r0
 		add length,r0
 		b formatLoop$
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
 		

@@ -16,15 +16,15 @@
 */
 
 .section .data
-tag_core: .int 0
-tag_mem: .int 0
-tag_videotext: .int 0
-tag_ramdisk: .int 0
-tag_initrd2: .int 0
-tag_serial: .int 0
-tag_revision: .int 0
-tag_videolfb: .int 0
-tag_cmdline: .int 0
+tag_core:        .int 0
+tag_mem:         .int 0
+tag_videotext:   .int 0
+tag_ramdisk:     .int 0
+tag_initrd2:     .int 0
+tag_serial:      .int 0
+tag_revision:    .int 0
+tag_videolfb:    .int 0
+tag_cmdline:     .int 0
 
 
 /* 
@@ -33,7 +33,7 @@ tag_cmdline: .int 0
 * C++ Signature: void* FindTag(u16 tagNumber)
 */
 .section .text
-.globl FindTag
+.global FindTag
 FindTag:
    tag .req r0
    tagList .req r1
@@ -86,4 +86,8 @@ FindTag:
       .unreq tagAddr
       .unreq tagIndex
 
-/****************************************************************************/
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/

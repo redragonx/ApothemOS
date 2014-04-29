@@ -13,14 +13,14 @@
 /********************Explaination of r0, r1 designations**********************
 * r0 will be  for designating the pin we wish to target (0-53)
 * r1 will be  for designating the function of the pin we wish to target (0-7)
-******************************************************************************
+*****************************************************************************/
 
 /*
 * GetGpioAddress returns the base addr of the GPIO region as a 
 * physical address in register r0.
 * C++ Signature: void* GetGpioAddress()
 */
- .globl GetGpioAddress        /*Tells assembler to make function global*/
+ .global GetGpioAddress        /*Tells assembler to make function global*/
 GetGpioAddress:               /*Label*/
     ldr r0, =0x20200000       /*Load GPIO controller access address in r0*/ 
     mov pc,lr                 /*Move contents of link register into pc*/
@@ -32,7 +32,7 @@ GetGpioAddress:               /*Label*/
 * by r0 to the low 3 bits of r1.
 * C++ Signature: void SetGpioFunction(u32 gpioRegister, u32 function)
 */
-.globl SetGpioFunction        /*Tells assembler to make global*/
+.global SetGpioFunction        /*Tells assembler to make global*/
 SetGpioFunction:              /*Label*/
 
    pinNum  .req r0
@@ -105,7 +105,7 @@ SetGpioFunction:              /*Label*/
 * otherwise. 
 * C++ Signature: void SetGpio(u32 gpioRegister, u32 value)
 */
-.globl SetGpio                /*Msg to assembler to make function global*/
+.global SetGpio                /*Msg to assembler to make function global*/
 SetGpio:
 
    pinNum .req r0             /*Alias pinNum for r0 */
@@ -157,4 +157,6 @@ SetGpio:
                                      *we pushed the link register.
                                      */			
 
-/****************************************************************************/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/

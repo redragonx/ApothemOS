@@ -14,7 +14,7 @@
 * output of the next number in a pseduo random number sequence.
 * C++ Signature: u32 Random(u32 lastValue);
 */
-.globl Random				/*Make this a global method*/
+.global Random				/*Make this a global method*/
 Random:
    xnm .req r0				/*Alias r0 as xnm*/
    a .req r1				/*Alias r1 as a*/
@@ -29,4 +29,8 @@ Random:
    .unreq a				/*Unalias a*/
    mov pc,lr				/*Return*/
 
-/*****************************************************************************/
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/

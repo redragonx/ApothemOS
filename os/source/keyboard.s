@@ -74,7 +74,7 @@ KeysShift:
 * Updates the keyboard pressed and released data.
 * C++ Signature: void KeyboardUpdate();
 */
-.globl KeyboardUpdate
+.global KeyboardUpdate
 KeyboardUpdate:
 	push {r4,r5,lr}
 
@@ -130,7 +130,7 @@ return$:
 * not 0 otherwise.
 * C++ Signature bool KeyWasDown(u16 scanCode)
 */
-.globl KeyWasDown
+.global KeyWasDown
 KeyWasDown:
 	ldr r1,=KeyboardOldDown
 	mov r2,#0
@@ -154,7 +154,7 @@ KeyWasDown:
 * character was typed.
 * C++ Signature char KeyboardGetChar()
 */
-.globl KeyboardGetChar
+.global KeyboardGetChar
 KeyboardGetChar:	
 	ldr r0,=KeyboardAddress
 	ldr r1,[r0]
@@ -208,4 +208,8 @@ keyboardGetCharReturn$:
 	pop {r4,r5,r6,pc}
 	.unreq kbd
 	.unreq key
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
 	

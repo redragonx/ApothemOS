@@ -36,7 +36,7 @@ Address	  Bytes	 Name           Description                 Read / Write
 * address in register r0.
 * C++ Signature: void* GetMailboxBase()
 */
-.globl GetMailboxBase
+.global GetMailboxBase
 GetMailboxBase: 
 	ldr r0,=0x2000B880
 	mov pc,lr
@@ -46,7 +46,7 @@ GetMailboxBase:
 * given in the low 4 bits of r0, as the top 28 bits of r0.
 * C++ Signature: u32 MailboxRead(u8 channel)
 */
-.globl MailboxRead
+.global MailboxRead
 MailboxRead: 
 	and r3,r0,#0xf
 	mov r2,lr
@@ -72,7 +72,7 @@ MailboxRead:
 * given in the low 4 bits of r1.
 * C++ Signature: void MailboxWrite(u32 value, u8 channel)
 */
-.globl MailboxWrite
+.global MailboxWrite
 MailboxWrite: 
 	and r2,r1,#0xf
 	and r1,r0,#0xfffffff0
@@ -88,3 +88,8 @@ MailboxWrite:
 
 	str r1,[r0,#32]
 	mov pc,lr
+
+
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+/*------------------------------------EOF------------------------------------*/
+/*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
