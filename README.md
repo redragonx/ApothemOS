@@ -1,5 +1,5 @@
 =====================================
-Proposal for RasperryPi OS Project
+Proposal for Raspberry Pi OS Project
 =====================================
 
 Stephen Chavez and Joshua Michael Waggoner
@@ -12,17 +12,20 @@ implemented on a Raspberry Pi, using ARMv6 assembly language. The operating
 system will be capable of manipulating all GPIO pins that are on the Raspberry
 Pi's board, displaying text, and executing commands. From this skeleton of an 
 operating system, we plan to add more functionality as time goes on, and possibly
-use it for educational purposes in the future. 
+use it for educational purposes in the future. Estimated budget for Raspberry Pi kit,
+GPIO breakout cables, LED's, SD card, breadboard and wires is under $100. 
 
 *Note: Can be connected to optional LED cube assembly through a GPIO breakout cable.
 
 Materials:
 ==============
 
-- Raspberry Pi (Model B) - http://en.wikipedia.org/wiki/Raspberry_Pi
+- Raspberry Pi© (Model B) - http://en.wikipedia.org/wiki/Raspberry_Pi
 - Blank 2GB SD Card -  http://en.wikipedia.org/wiki/Secure_Digital
 - Various LEDs - http://en.wikipedia.org/wiki/Light-emitting_diode (optional)
-- Various wires and/or cables to connect the Pi and external units. (optional)
+- Various wires and solder for LED cube. (optional)
+- GPIO breakout cable. (optional)
+- Breadboard for prototyping. (optional) 
 
 
 Project goals:
