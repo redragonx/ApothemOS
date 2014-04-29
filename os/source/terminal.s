@@ -435,6 +435,7 @@ PrintBatman:
 	.unreq bufferStop
 	.unreq view
 
+<<<<<<< HEAD
 	pop {r4,r5,r6,r7,r8,r9,r10,r11,pc}
 
         
@@ -445,13 +446,28 @@ PrintBatman:
 
 /*
 * Prints a string to the terminal and zelda. r0 contains a 
+=======
+/*****************************************************************************/
+
+/*
+* Experimental - Added vers 0.4
+*/
+
+/*
+* Prints a string to the terminal and batman. r0 contains a 
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 * pointer to the ASCII encoded string, and r1 contains its length. New lines,
 * and null terminators are obeyed. then it prints ascii art. lol. 
 * C++ Signature: void Print(char* string, u32 length);
 */
+<<<<<<< HEAD
 .global PrintZelda
 PrintZelda:
               
+=======
+.globl PrintBatman
+PrintBatman:
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 	teq r1,#0
 	moveq pc,lr
 
@@ -476,21 +492,34 @@ PrintZelda:
 	add taddr,#128*128*2
 	and x,bufferStop,#0xfe
 	lsr x,#1
+<<<<<<< HEAD
 
 	charLoopZelda$:
+=======
+	
+	charLoopBatman$:
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 		ldrb char,[string]
 		and char,#0x7f
 		teq char,#0x1b
 		beq charEscape$
 		teq char,#'\n'
+<<<<<<< HEAD
 		bne charNormalZelda$
 
 		mov r0,#0x7f
 		clearLineZelda$:
+=======
+		bne charNormalBatman$
+
+		mov r0,#0x7f
+		clearLineBatman$:
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 			strh r0,[bufferStop]
 			add bufferStop,#2
 			add x,#1
 			cmp x,#128
+<<<<<<< HEAD
 			blt clearLineZelda$
 
 		b charLoopContinueZelda$
@@ -498,6 +527,15 @@ PrintZelda:
 	charEscapeZelda$:
 		cmp length,#2
 		blt charLoopContinueZelda$
+=======
+			blt clearLineBatman$
+
+		b charLoopContinueBatman$
+
+	charEscapeBatman$:
+		cmp length,#2
+		blt charLoopContinueBatman$
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 		sub length,#1
 		add string,#1
@@ -507,11 +545,19 @@ PrintZelda:
 		subgt char,#'a'-10		
 		ldr r0,=terminalColour
 		strb char,[r0]
+<<<<<<< HEAD
 		b charLoopContinueZelda$
 
 	charNormalZelda$:
 		teq char,#0
 		beq charLoopBreakZelda$
+=======
+		b charLoopContinueBatman$
+
+	charNormalBatman$:
+		teq char,#0
+		beq charLoopBreak$
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 		strb char,[bufferStop]
 		ldr r0,=terminalColour
@@ -519,10 +565,17 @@ PrintZelda:
 		strb r0,[bufferStop,#1]
 		add bufferStop,#2
 		add x,#1
+<<<<<<< HEAD
 
 	charLoopContinueZelda$:
 		cmp x,#128
 		blt noScrollZelda$
+=======
+		
+	charLoopContinueBatman$:
+		cmp x,#128
+		blt noScrollBatman$
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 		mov x,#0
 		subs r0,bufferStop,view
@@ -532,7 +585,11 @@ PrintZelda:
 		teq view,taddr
 		subeq view,taddr,#128*128*2
 
+<<<<<<< HEAD
 	noScrollZelda$:
+=======
+	noScrollBatman$:
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 		teq bufferStop,taddr
 		subeq bufferStop,taddr,#128*128*2
 
@@ -543,22 +600,49 @@ PrintZelda:
 
 		subs length,#1
 		add string,#1
+<<<<<<< HEAD
 		bgt charLoopZelda$
 
 	charLoopBreakZelda$:
 
+=======
+		bgt charLoopBatman$
+
+	charLoopBreakBatman$:
+	
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 	sub taddr,#128*128*2
 	sub taddr,#terminalBuffer-terminalStart
 	str bufferStop,[taddr,#terminalStop-terminalStart]
 	str view,[taddr,#terminalView-terminalStart]
 	str bufferStart,[taddr]
 
+<<<<<<< HEAD
         ldr r0,=zelda
         ldr r1,=zeldaStringLength
         /*bl should work, cause it should return to here right????*/
         bl Print
 
         .unreq bufferStart                 /*Unalias everything else...*/
+=======
+/*
+* Experimaental - Added vers 0.4
+*/
+
+
+        ldr r0,=batman
+        ldr r1,=batmanStringLength
+        /*bl should work, cause it should return to here right????*/
+        bl Print
+   
+
+	pop {r4,r5,r6,r7,r8,r9,r10,r11,pc}
+
+        
+
+
+	.unreq bufferStart                 /*Unalias everything else...*/
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 	.unreq taddr 
 	.unreq x 
 	.unreq string
@@ -566,6 +650,7 @@ PrintZelda:
 	.unreq char
 	.unreq bufferStop
 	.unreq view
+<<<<<<< HEAD
    
 
 	pop {r4,r5,r6,r7,r8,r9,r10,r11,pc}
@@ -580,6 +665,10 @@ PrintZelda:
 .global PrintHelp
 PrintHelp:
        
+=======
+
+/*************************End Print Batman stuff******************************/
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 	
 	push {r4,r5,r6,r7,r8,r9,r10,r11,lr}
 	bufferStart .req r4
@@ -812,6 +901,7 @@ ReadLine:
 	.unreq length
 	.unreq view
 
+<<<<<<< HEAD
 /****************************End Read Line************************************/
 
 
@@ -828,6 +918,24 @@ batman:
 
 .ascii"\n"                                
 .ascii"\n"                                
+=======
+/*****************************************************************************/
+
+/*
+* Data Section
+*/
+
+.section .data
+
+/*
+* Experimental - batmansays
+*/
+/*****************************************************************************/
+
+.align 2
+batman:
+   
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 .ascii"\n                     Tb.          Tb."                                
 .ascii"\n                     :$$b.        $$$b."                              
 .ascii"\n                     :$$$$b.      :$$$$b."                            
@@ -861,6 +969,7 @@ batman:
 .ascii"\n d$$$$$$$$$$pp..__..gg$$$$$$$$$$$$$$$$$$$$$$$$$$$"
 .ascii"\nd$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$p._            .gp."
 .ascii"\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$p._.ggp._.d$$$$b"
+<<<<<<< HEAD
 .ascii"\n©2014 chris.com"   
          
 batmanEnd:
@@ -898,10 +1007,17 @@ zelda:
         
 zeldaEnd:
 
+=======
+.ascii"\n©2014 chris.com"
+
+
+batmanEnd:
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 
 
 /*
+<<<<<<< HEAD
 * ascii code string length for zelda ascii
 */
 .align 2
@@ -988,3 +1104,11 @@ helpEnd:
 /*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
 /*------------------------------------EOF------------------------------------*/
 /*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+=======
+* Experimental - Version 0.4
+*/
+
+.align 2
+batmanStringLength:
+.int batmanEnd-batman
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36

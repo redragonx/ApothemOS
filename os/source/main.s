@@ -165,6 +165,7 @@ loop$:
 	        ldr r3,=command
 	        bl FormatString
 
+<<<<<<< HEAD
 	        mov r1,r0
 	        ldr r0,=formatBuffer
 	        bl Print
@@ -173,10 +174,26 @@ loop$:
 	        bl TerminalDisplay
 	        b loop$
 
+=======
+loopContinue$:
+	bl TerminalDisplay
+	b loop$
+
+
+                             /* Need help here --> */
+
+
+/*---------------------------------------------------------------------------*/
+
+
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 /*---------------------------------------------------------------------------*/
 
 /*
-* echo returns a sting back to the user
+* echo 
+* variables:
+*    r1 is the string passed
+*    r0 is ? for now
 */
 echo:
 	cmp r1,#5            /*Compare r1 and 5*/
@@ -185,6 +202,14 @@ echo:
 	add r0,#5            /**/
 	sub r1,#5            
 	b Print
+<<<<<<< HEAD
+=======
+
+/*
+* Experimental - version 0.4
+*/
+/*****************************************************************************/
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 /*
 /*****************************************************************************/
@@ -203,6 +228,7 @@ help:
 */
 batmansay:
    
+<<<<<<< HEAD
    cmp r1,#10          /* Compare r1 and 10 */
    movle pc,lr         /* If the whle string is null, return */
    add r0,#10          /* Add 10 to r0 */
@@ -222,10 +248,88 @@ zeldasay:
    add r0,#9          /* Add 10 to r0 */
    sub r1,#9          /* Subtract 10 from r1 */             
    b PrintZelda       /* Branch to the print zeldasays screen*/
+=======
+   cmp r1,#10            /*Compare r1 and 10*/
+   movle pc,lr          /*if the whle string is null, return*/
+   add r0,#10            /**/
+   sub r1,#10            
+   b PrintBatman
+
+/*****************************************************************************/
+ok:
+	teq r1,#5       /*ok on=5*/
+	beq okOn$       /*If there's a possibility its ok on branch to okOn$*/
+	teq r1,#6       /*ok off=6*/ 
+	beq okOff$      /*If there's a possibility its ok on branch to okOn$*/
+	mov pc,lr       /*If not valid string length, return*/
+
+	okOn$:
+		ldrb r2,[r0,#3]       /**/
+		teq r2,#'o'
+		ldreqb r2,[r0,#4]
+		teqeq r2,#'n'
+		movne pc,lr
+		mov r1,#0
+		b okAct$
+
+	okOff$:
+		ldrb r2,[r0,#3]
+		teq r2,#'o'
+		ldreqb r2,[r0,#4]
+		teqeq r2,#'f'
+		ldreqb r2,[r0,#5]
+		teqeq r2,#'f'
+		movne pc,lr
+		mov r1,#1
+
+	okAct$:
+		mov r0,#16
+		b SetGpio
+
+/*****************************************************************************/
+
+/*****************************************************************************/
+
+
+/*
+* GPIO16 (LED on ARM circuit board) - Added Version 0.4
+*/
+
+gpio16:                /* Label for gpio16*/
+     teq r1,#9         /* gpio16 on=9*/
+     beq gpio16On$     /* If there's a possibility its ok on branch to okOn$*/
+     teq r1,#10         /* gpio16 off=10 */
+     beq gpio16Off$  
+     mov pc,lr
+
+     gpio16On$:
+          ldrb r2,[r0,#7]
+          teq r2,#'o'
+          ldreqb r2,[r0,#8]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio16Act$
+
+     gpio16Off$:
+          ldrb r2,[r0,#7]
+          teq r2,#'o'
+          ldreqb r2,[r0,#8]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#9]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio16Act$:
+          mov r0,#16
+          b SetGpio
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 
 
 /*****************************************************************************/
+<<<<<<< HEAD
 
 
 
@@ -241,10 +345,297 @@ zeldasay:
 */
 .section .data
 
+=======
+
+/*-----------------------------------------------------------------------------
+*
+*                 Beginning of specific GPIO on/off commands
+*                 __________________________________________
+*
+* (see http://www.hobbytronics.co.uk/raspberry-pi-gpio-pinout for more info.) 
+*
+*    Here is a chart of relevant GPIO Pins. For our naming
+*    conventions, we are going with the actual GPIO pin number
+*    and not the number in the assembly diagram (the inner numbers):
+*
+*    | O   3.3V    |1 |  |2 |    5V     O |
+*    | O           |3 |  |4 |    5V     O |
+*    | O           |5 |  |6 |   Ground  O |
+*    | O   GPIO4   |7 |  |8 |           O |
+*    | O   Ground  |9 |  |10|           O |
+*    | O   GPIO17  |11|  |12|   GPIO18  O |
+*    | O   GPIO27  |13|  |14|   Ground  O |
+*    | O   GPIO22  |15|  |16|   GPIO23  O |
+*    | O   3.3V    |17|  |18|   GPIO24  O |
+*    | O           |19|  |20|   Ground  O |
+*    | O           |21|  |22|   GPIO25  O |
+*    | O           |23|  |24|           O |
+*    | O  Ground   |25|  |26|           O |
+*
+*-----------------------------------------------------------------------------/
+
+/* 
+* Left Side of GPIO pin output assembly chart above:
+*/
+
+/*
+* GPIO 4 (7 in GPIO pin output assembly chart above )
+*/
+gpio4:
+        teq r1,#5
+	beq gpio4On$
+	teq r1,#6
+	beq gpio4Off$
+	mov pc,lr
+
+	gpio4On$:
+		ldrb r2,[r0,#3]
+		teq r2,#'o'
+		ldreqb r2,[r0,#4]
+		teqeq r2,#'n'
+		movne pc,lr
+		mov r1,#0
+		b gpio4Act$
+
+	gpio4Off$:
+		ldrb r2,[r0,#3]
+		teq r2,#'o'
+		ldreqb r2,[r0,#4]
+		teqeq r2,#'f'
+		ldreqb r2,[r0,#5]
+		teqeq r2,#'f'
+		movne pc,lr
+		mov r1,#1
+
+	gpio4Act$:
+		mov r0,#4
+		b SetGpio
+
+
+
+
+
+/*
+* GPIO 27 (13 in GPIO pin output assembly chart above )
+*/
+gpio27:
+     teq r1,#5
+     beq gpio27On$
+     teq r1,#6
+     beq gpio27Off$
+     mov pc,lr
+
+     gpio27On$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio27Act$
+
+     gpio27Off$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#5]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio27Act$:
+          mov r0,#27
+          b SetGpio
+
+gpio22:
+     teq r1,#5
+     beq gpio22On$
+     teq r1,#6
+     beq gpio22Off$
+     mov pc,lr
+
+     gpio22On$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio22Act$
+
+     gpio22Off$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#5]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio22Act$:
+          mov r0,#22
+          b SetGpio
+
+/*****************************************************************************/
+
+/*
+* Right side in GPIO pin output assembly chart above:
+*/
+
+/*
+* GPIO18 (24 in GPIO pin output assembly chart above )
+*/
+gpio18:
+     teq r1,#5
+     beq gpio18On$
+     teq r1,#6
+     beq gpio18Off$
+     mov pc,lr
+
+     gpio18On$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio18Act$
+
+     gpio18Off$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#5]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio18Act$:
+          mov r0,#18
+          b SetGpio
+
+/*****************************************************************************/
+
+/*
+* GPIO23 (16 in GPIO pin output assembly chart above )
+*/
+gpio23:
+     teq r1,#5
+     beq gpio23On$
+     teq r1,#6
+     beq gpio23Off$
+     mov pc,lr
+
+     gpio23On$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio23Act$
+
+     gpio23Off$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#5]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio23Act$:
+          mov r0,#23
+          b SetGpio
+
+/*****************************************************************************/
+
+/*
+* GPIO24 (18 in GPIO pin output assembly chart above )
+*/
+
+gpio24: 
+     teq r1,#5
+     beq gpio24On$
+     teq r1,#6
+     beq gpio24Off$
+     mov pc,lr
+
+     gpio24On$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio24Act$
+
+     gpio24Off$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#5]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio24Act$:
+          mov r0,#24
+          b SetGpio
+
+/*****************************************************************************/
+
+/*
+* GPIO25 (22 in GPIO pin output assembly chart above )
+*/
+gpio25:
+     teq r1,#5
+     beq gpio25On$
+     teq r1,#6
+     beq gpio25Off$
+     mov pc,lr
+
+     gpio25On$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'n'
+          movne pc,lr
+          mov r1,#0
+          b gpio25Act$
+
+     gpio25Off$:
+          ldrb r2,[r0,#3]
+          teq r2,#'o'
+          ldreqb r2,[r0,#4]
+          teqeq r2,#'f'
+          ldreqb r2,[r0,#5]
+          teqeq r2,#'f'
+          movne pc,lr
+          mov r1,#1
+
+     gpio25Act$:
+          mov r0,#25
+          b SetGpio
+
+/*
+* End of GPIO functions as of now. Vers 0.3
+*/
+
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 /****************************************************************************/
 /**********************************Intro Screen******************************/
 /****************************************************************************/
 
+<<<<<<< HEAD
+=======
+.section .data
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 .align 2
 welcome:
   .ascii ".__________________________________________________."
@@ -290,7 +681,15 @@ welcome:
   .ascii "\n"
 welcomeEnd:
 
+<<<<<<< HEAD
 /*****************************************************************************/
+=======
+
+/****************************************************************************/
+/******************************End New Intro Screen**************************/
+/****************************************************************************/
+
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 
 .align 2
 prompt:
@@ -334,11 +733,8 @@ commandStringCls:        .ascii      "cls"
 /*
 * GPIO ascii definitions. Added Vers 0.4
 */
-commandStringGpio0:  .ascii "gpio0"
-commandStringGpio1:  .ascii "gpio1"
-commandStringGpio2:  .ascii "gpio2"
-commandStringGpio3:  .ascii "gpio3"
 commandStringGpio4:  .ascii "gpio4"
+<<<<<<< HEAD
 commandStringGpio5:  .ascii "gpio5"
 commandStringGpio6:  .ascii "gpio6"
 commandStringGpio7:  .ascii "gpio7"
@@ -356,10 +752,16 @@ commandStringGpio18: .ascii "gpio18"
 commandStringGpio19: .ascii "gpio19"
 commandStringGpio20: .ascii "gpio20"
 commandStringGpio21: .ascii "gpio21"
+=======
+commandStringGpio17: .ascii "gpio16"
+commandStringGpio27: .ascii "gpio27"
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 commandStringGpio22: .ascii "gpio22"
+commandStringGpio18: .ascii "gpio18"
 commandStringGpio23: .ascii "gpio23"
 commandStringGpio24: .ascii "gpio24"
 commandStringGpio25: .ascii "gpio25"
+<<<<<<< HEAD
 commandStringGpio26: .ascii "gpio26"
 commandStringGpio27: .ascii "gpio27"
 commandStringGpio28: .ascii "gpio28"
@@ -388,6 +790,10 @@ commandStringGpio50: .ascii "gpio50"
 commandStringGpio51: .ascii "gpio51"
 commandStringGpio52: .ascii "gpio52"
 commandStringGpio53: .ascii "gpio53"
+=======
+commandStringBatmansay: .ascii "batmansay"
+
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 commandStringEnd:
 
 /*********************End Command Strings definitions*************************/
@@ -409,32 +815,15 @@ commandTable:
 /*
 * GPIO command table string definitions. Added Vers 0.4
 */
-.int commandStringGpio0,  gpio0
-.int commandStringGpio1,  gpio1
-.int commandStringGpio2,  gpio2
-.int commandStringGpio3,  gpio3
 .int commandStringGpio4,  gpio4
-.int commandStringGpio5,  gpio4
-.int commandStringGpio6,  gpio7
-.int commandStringGpio7,  gpio4
-.int commandStringGpio8,  gpio8
-.int commandStringGpio9,  gpio9
-.int commandStringGpio10, gpio10
-.int commandStringGpio11, gpio11
-.int commandStringGpio12, gpio12
-.int commandStringGpio13, gpio13
-.int commandStringGpio14, gpio14
-.int commandStringGpio15, gpio15
-.int commandStringGpio16, gpio16
-.int commandStringGpio17, gpio17
-.int commandStringGpio18, gpio18
-.int commandStringGpio19, gpio19
-.int commandStringGpio20, gpio20
-.int commandStringGpio21, gpio21
+.int commandStringGpio17, gpio16
+.int commandStringGpio27, gpio27
 .int commandStringGpio22, gpio22
+.int commandStringGpio18, gpio18
 .int commandStringGpio23, gpio23
 .int commandStringGpio24, gpio24
 .int commandStringGpio25, gpio25
+<<<<<<< HEAD
 .int commandStringGpio26, gpio26
 .int commandStringGpio27, gpio27
 .int commandStringGpio28, gpio28
@@ -463,6 +852,10 @@ commandTable:
 .int commandStringGpio51, gpio51
 .int commandStringGpio52, gpio52
 .int commandStringGpio53, gpio53
+=======
+.int commandStringBatmansay, batmansay
+
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
 .int commandStringEnd, 0
 
 /****************************End Command Table********************************/
@@ -474,8 +867,11 @@ commandTable:
 welcomeStringLength:
 .int welcomeEnd-welcome
 
+<<<<<<< HEAD
 
 
 /*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
 /*------------------------------------EOF------------------------------------*/
 /*=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=*/
+=======
+>>>>>>> 9e432eade76b3a487bf8d5169ffcbf3eb045ac36
