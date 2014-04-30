@@ -48,15 +48,15 @@ Documentation:
 - University of Cambridge Baking Pi Raspberry Pi OS Tutorial - https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/
 
 YouTube videos
-===============
+==============
 https://www.youtube.com/playlist?list=PLTBdZ9kVzjDw-kqISqD1Qm9uIgpZ4_m9Q
 
 Twitter pictures
-==================
+================
 
 - https://twitter.com/RedragonX/status/460683450974892032
 - https://twitter.com/RedragonX/status/460660065842638848
 
 Power Point presentation about our project
-=========================================
-- https://rabbitfighter.net/ApothemOS.ppt
+==========================================
+- https://www.rabbitfighter.net/ApothemOS.pptx
