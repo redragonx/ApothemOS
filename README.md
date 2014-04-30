@@ -1,11 +1,11 @@
-=====================================
-Proposal for Raspberry Pi OS Project
-=====================================
+================================================
+Proposal for Raspberry Pi OS Project: Apothem OS
+================================================
 
-Stephen Chavez and Joshua Michael Waggoner
+By Stephen Chavez & Joshua Michael Waggoner
 
 Abstract:
-==============
+=========
 
 For our final project we plan to create a minimal operating system that will be
 implemented on a Raspberry Pi, using ARMv6 assembly language. The operating
@@ -18,7 +18,7 @@ GPIO breakout cables, LED's, SD card, breadboard and wires is under $100.
 *Note: Can be connected to optional LED cube assembly through a GPIO breakout cable.
 
 Materials:
-==============
+==========
 
 - Raspberry Pi© (Model B) - http://en.wikipedia.org/wiki/Raspberry_Pi
 - Blank 2GB SD Card -  http://en.wikipedia.org/wiki/Secure_Digital
