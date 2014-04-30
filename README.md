@@ -56,3 +56,7 @@ Twitter pictures
 
 - https://twitter.com/RedragonX/status/460683450974892032
 - https://twitter.com/RedragonX/status/460660065842638848
+
+Power Point presentation about our project
+=========================================
+- https://rabbitfighter.net/ApothemOS.ppt
