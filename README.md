@@ -59,4 +59,4 @@ Twitter pictures
 
 Power Point presentation about our project
 ==========================================
-- https://www.rabbitfighter.net/ApothemOS.pptx
+- http://rabbitfighter.net/ApothemOS.pptx
